@@ -123,6 +123,75 @@
       </article>
     </section>
 
+
+
+    <section class="grid two lower">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Bonos con ficha incompleta</h2>
+            <p>Tickers con precio pero sin datos suficientes para calcular TIR, duration o rating.</p>
+          </div>
+        </div>
+        <div class="table-wrap small-table">
+          <table id="missingTable">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Precio USD</th>
+                <th>Problema</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Editor rápido de ficha técnica</h2>
+            <p>Permite completar datos manuales sin tocar archivos. Se guarda en <code>data/bonds.json</code>.</p>
+          </div>
+        </div>
+        <div class="form-grid compact-form">
+          <label>Ticker / especie principal
+            <input id="editSymbol" placeholder="Ej: TLCPO" />
+          </label>
+          <label>Aliases separados por coma
+            <input id="editAliases" placeholder="Ej: TLCPO, TLCPD, TLCP" />
+          </label>
+          <label>Emisor
+            <input id="editIssuer" placeholder="Ej: Telecom Argentina S.A." />
+          </label>
+          <label>Sector
+            <input id="editSector" placeholder="Ej: Telecomunicaciones" />
+          </label>
+          <label>Cupón anual decimal
+            <input id="editCoupon" type="number" step="0.0001" placeholder="Ej: 0.0925" />
+          </label>
+          <label>Vencimiento
+            <input id="editMaturity" type="date" />
+          </label>
+          <label>Frecuencia anual
+            <input id="editFrequency" type="number" step="1" placeholder="2 semestral / 4 trimestral" />
+          </label>
+          <label>Rating
+            <input id="editRating" placeholder="Ej: AA+(arg)" />
+          </label>
+          <label>Agencia
+            <input id="editRatingAgency" placeholder="Ej: FIX" />
+          </label>
+          <label>Ley
+            <input id="editLaw" placeholder="NY / Argentina" />
+          </label>
+        </div>
+        <p class="muted editor-note">Amortización: si no se carga una estructura específica, se asume bullet al vencimiento. Para amortizaciones parciales, editar el JSON completo.</p>
+        <button id="saveTech" class="primary wide">Guardar ficha técnica</button>
+      </article>
+    </section>
+
     <section class="grid two lower">
       <article class="card">
         <div class="card-head">

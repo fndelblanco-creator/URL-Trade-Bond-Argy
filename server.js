@@ -150,6 +150,44 @@ function baseSymbol(symbol) {
   return s;
 }
 
+
+function symbolAliasesOf(bond) {
+  const values = [bond?.symbol, ...(Array.isArray(bond?.aliases) ? bond.aliases : [])];
+  return Array.from(new Set(values.map(normalizeSymbol).filter(Boolean)));
+}
+
+function findBondIndexBySymbol(bonds, symbol, base = null) {
+  const s = normalizeSymbol(symbol);
+  const b = normalizeSymbol(base || baseSymbol(s));
+  for (let i = 0; i < bonds.length; i += 1) {
+    const aliases = symbolAliasesOf(bonds[i]);
+    if (aliases.includes(s)) return i;
+  }
+  // Fallback conservador: matchea por base exacta, útil para especies D/O/C/P del mismo bono.
+  for (let i = 0; i < bonds.length; i += 1) {
+    const aliases = symbolAliasesOf(bonds[i]);
+    if (aliases.some((a) => baseSymbol(a) === b)) return i;
+  }
+  return -1;
+}
+
+function findBondTech(bonds, symbol, base = null) {
+  const idx = findBondIndexBySymbol(bonds, symbol, base);
+  return idx >= 0 ? bonds[idx] : null;
+}
+
+function technicalProblems(tech) {
+  if (!tech) return ["Falta ficha técnica"];
+  const problems = [];
+  if (!tech.issuer && !tech.shortIssuer) problems.push("Falta emisor");
+  if (!tech.coupon && tech.coupon !== 0) problems.push("Falta cupón");
+  if (!tech.maturity) problems.push("Falta vencimiento");
+  if (!tech.frequency) problems.push("Falta frecuencia");
+  if (!Array.isArray(tech.amortization) || !tech.amortization.length) problems.push("Falta amortización");
+  if (!tech.rating) problems.push("Falta rating");
+  return problems;
+}
+
 function normalizeMarketRow(row) {
   const symbol = normalizeSymbol(row.symbol || row.ticker || row.s || row.descripcion || row.nombre);
   const last = cleanNumber(row.c ?? row.close ?? row.last ?? row.price ?? row.px_last ?? row.ultimo);
@@ -358,7 +396,6 @@ async function getPrices() {
   }
   const bases = new Set([...usdMap.keys(), ...arsMap.keys()]);
   const bonds = await loadBonds();
-  const bondBySymbol = new Map(bonds.map((b) => [normalizeSymbol(b.symbol), b]));
   const today = new Date();
   const out = [];
   for (const base of bases) {
@@ -386,11 +423,16 @@ async function getPrices() {
     if (usd && normalizedPrices.converted) priceSource = "Especie O convertida: ARS / MEP";
     if (!usd && ars) priceSource = "Especie ARS convertida: ARS / MEP";
 
-    const tech = bondBySymbol.get(symbol) || bondBySymbol.get(`${base}O`) || null;
+    const tech = findBondTech(bonds, symbol, base);
+    const problems = technicalProblems(tech);
     const metrics = tech ? calcMetrics(tech, tablePrice, today) : calcMetrics(null, null, today);
     out.push({
       symbol,
       base,
+      canonicalSymbol: tech?.symbol || null,
+      aliases: tech ? symbolAliasesOf(tech) : [],
+      hasTechnical: !!tech,
+      technicalProblems: problems,
       issuer: tech?.shortIssuer || tech?.issuer || "—",
       sector: tech?.sector || "—",
       priceUsd: tablePrice,
@@ -415,6 +457,7 @@ async function getPrices() {
       law: tech?.law || null,
       secured: tech?.secured || null,
       sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"),
+      validationStatus: problems.length ? problems.join("; ") : "OK",
       tir: metrics.tir,
       durationMod: metrics.durationMod,
       accrued: metrics.accrued,
@@ -425,7 +468,17 @@ async function getPrices() {
     });
   }
   out.sort((a, b) => a.symbol.localeCompare(b.symbol));
-  const payload = { asOf: nowIso(), mep, rows: out, errors };
+  const missingTechnical = out
+    .filter((r) => !r.hasTechnical || r.technicalProblems?.length)
+    .map((r) => ({
+      symbol: r.symbol,
+      base: r.base,
+      issuer: r.issuer,
+      priceUsd: r.priceUsd,
+      problems: r.technicalProblems || [],
+      suggestion: !r.hasTechnical ? "Crear ficha o agregar alias" : "Completar campos faltantes"
+    }));
+  const payload = { asOf: nowIso(), mep, rows: out, missingTechnical, errors };
   cache.prices = { ts: Date.now(), data: payload };
   return payload;
 }
@@ -593,8 +646,8 @@ async function syncFixForBond(bond) {
 
 async function syncOne(symbol, mode = "both") {
   const bonds = await loadBonds();
-  const idx = bonds.findIndex((b) => normalizeSymbol(b.symbol) === normalizeSymbol(symbol));
-  if (idx < 0) return { ok: false, message: "Bono no encontrado en base técnica" };
+  const idx = findBondIndexBySymbol(bonds, symbol);
+  if (idx < 0) return { ok: false, message: "Bono no encontrado en base técnica ni aliases" };
   const bond = bonds[idx];
   const reports = {};
   let patch = {};
@@ -632,6 +685,38 @@ app.post("/api/bonds", async (req, res) => {
     if (!Array.isArray(req.body?.bonds)) return res.status(400).json({ ok: false, error: "Enviar { bonds: [...] }" });
     await saveBonds(req.body.bonds);
     res.json({ ok: true, count: req.body.bonds.length });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+
+
+app.post("/api/bonds/upsert", async (req, res) => {
+  try {
+    const bond = req.body?.bond;
+    if (!bond || !bond.symbol) return res.status(400).json({ ok: false, error: "Enviar { bond: { symbol, ... } }" });
+    const bonds = await loadBonds();
+    const symbol = normalizeSymbol(bond.symbol);
+    const idx = findBondIndexBySymbol(bonds, symbol);
+    const aliases = Array.from(new Set([symbol, ...(Array.isArray(bond.aliases) ? bond.aliases : [])].map(normalizeSymbol).filter(Boolean)));
+    const cleaned = {
+      ...bond,
+      symbol,
+      aliases,
+      coupon: bond.coupon === "" || bond.coupon === null || bond.coupon === undefined ? undefined : Number(bond.coupon),
+      frequency: bond.frequency === "" || bond.frequency === null || bond.frequency === undefined ? undefined : Number(bond.frequency),
+      updatedAt: nowIso(),
+      sourceStatus: bond.sourceStatus || "editado-manual",
+    };
+    if (!Array.isArray(cleaned.amortization) || !cleaned.amortization.length) {
+      if (cleaned.maturity) cleaned.amortization = [{ date: cleaned.maturity, percent: 1 }];
+    }
+    if (idx >= 0) bonds[idx] = { ...bonds[idx], ...cleaned };
+    else bonds.push(cleaned);
+    await saveBonds(bonds);
+    cache.prices = { ts: 0, data: null };
+    res.json({ ok: true, bond: idx >= 0 ? bonds[idx] : bonds[bonds.length - 1], action: idx >= 0 ? "updated" : "created" });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }

@@ -89,3 +89,10 @@ label input, label select { margin-top: 7px; }
   .card-head { display:block; }
   .card-head input { max-width: none; margin-top: 12px; }
 }
+.small-table { max-height: 300px; }
+.small-btn { padding: 7px 10px; border-radius: 10px; font-size: 12px; }
+.mini-warn { display:inline-block; padding:4px 7px; border-radius:999px; background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.35); color:#fde68a; margin:2px 3px 2px 0; font-size:12px; font-weight:800; }
+.compact-form { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.editor-note { margin-top: 12px; font-size: 13px; }
+code { color:#bae6fd; background:#07101f; padding:2px 5px; border-radius:6px; }
+@media (max-width: 720px) { .compact-form { grid-template-columns: 1fr; } }

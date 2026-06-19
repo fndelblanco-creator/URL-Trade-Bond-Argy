@@ -39,6 +39,35 @@ function getTablePrice(row) {
   return row.priceUsd;
 }
 
+
+function normalizeSymbol(symbol) {
+  return String(symbol || "").trim().toUpperCase();
+}
+
+function symbolAliasesOfBond(bond) {
+  return Array.from(new Set([bond?.symbol, ...(Array.isArray(bond?.aliases) ? bond.aliases : [])].map(normalizeSymbol).filter(Boolean)));
+}
+
+function rowMatchesSymbol(row, symbol) {
+  const s = normalizeSymbol(symbol);
+  if (!s || !row) return false;
+  if (normalizeSymbol(row.symbol) === s) return true;
+  if (normalizeSymbol(row.canonicalSymbol) === s) return true;
+  if ((row.aliases || []).map(normalizeSymbol).includes(s)) return true;
+  return false;
+}
+
+function bondMatchesSymbol(bond, symbol) {
+  const s = normalizeSymbol(symbol);
+  if (!s || !bond) return false;
+  return symbolAliasesOfBond(bond).includes(s);
+}
+
+function problemBadge(problems) {
+  if (!problems || !problems.length) return '<span class="badge ok">OK</span>';
+  return problems.map(p => `<span class="mini-warn">${p}</span>`).join(' ');
+}
+
 function renderTable() {
   const tbody = document.querySelector("#marketTable tbody");
   const q = $("tableSearch").value.trim().toLowerCase();
@@ -49,7 +78,7 @@ function renderTable() {
   tbody.innerHTML = rows.map((r) => {
     const price = getTablePrice(r);
     const techBadge = r.maturity ? "ok" : "warn";
-    return `<tr data-symbol="${r.symbol}">
+    return `<tr data-symbol="${r.symbol}" title="${(r.validationStatus || '').replace(/"/g, '&quot;')}">
       <td><span class="badge ${techBadge}">${r.symbol}</span></td>
       <td>${r.issuer || "—"}</td>
       <td>${fmtNum(price, 2)}</td>
@@ -75,7 +104,10 @@ function renderTable() {
 
 function renderSymbols() {
   const dl = $("symbolsList");
-  const symbols = Array.from(new Set([...(marketData?.rows || []).map(r => r.symbol), ...bonds.map(b => b.symbol)])).sort();
+  const symbols = Array.from(new Set([
+    ...(marketData?.rows || []).flatMap(r => [r.symbol, r.canonicalSymbol, ...(r.aliases || [])]),
+    ...bonds.flatMap(b => [b.symbol, ...(b.aliases || [])])
+  ].filter(Boolean))).sort();
   dl.innerHTML = symbols.map((s) => `<option value="${s}"></option>`).join("");
 }
 
@@ -83,10 +115,85 @@ function renderTechPreview() {
   $("techPreview").textContent = JSON.stringify(bonds, null, 2);
 }
 
+
+function renderMissingTechnical() {
+  const tbody = document.querySelector("#missingTable tbody");
+  if (!tbody) return;
+  const rows = marketData?.missingTechnical || [];
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="muted">No hay faltantes detectados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.slice(0, 80).map(r => `<tr>
+    <td><span class="badge warn">${r.symbol}</span></td>
+    <td>${fmtNum(r.priceUsd, 2)}</td>
+    <td>${problemBadge(r.problems)}</td>
+    <td><button class="small-btn" data-edit-missing="${r.symbol}">Completar</button></td>
+  </tr>`).join("");
+  tbody.querySelectorAll("[data-edit-missing]").forEach(btn => {
+    btn.addEventListener("click", () => fillEditor(btn.dataset.editMissing));
+  });
+}
+
+function findExistingBond(symbol) {
+  const s = normalizeSymbol(symbol);
+  return bonds.find(b => bondMatchesSymbol(b, s));
+}
+
+function fillEditor(symbol) {
+  const s = normalizeSymbol(symbol);
+  const existing = findExistingBond(s) || {};
+  $("editSymbol").value = existing.symbol || s;
+  $("editAliases").value = symbolAliasesOfBond(existing).length ? symbolAliasesOfBond(existing).join(", ") : s;
+  $("editIssuer").value = existing.issuer || "";
+  $("editSector").value = existing.sector || "";
+  $("editCoupon").value = existing.coupon ?? "";
+  $("editMaturity").value = existing.maturity || "";
+  $("editFrequency").value = existing.frequency || "";
+  $("editRating").value = existing.rating || "";
+  $("editRatingAgency").value = existing.ratingAgency || "";
+  $("editLaw").value = existing.law || "";
+  window.scrollTo({ top: $("editSymbol").getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" });
+}
+
+async function saveTechFromEditor() {
+  const symbol = normalizeSymbol($("editSymbol").value);
+  if (!symbol) throw new Error("Falta ticker");
+  const aliases = $("editAliases").value.split(",").map(normalizeSymbol).filter(Boolean);
+  const existing = findExistingBond(symbol) || {};
+  const couponRaw = $("editCoupon").value;
+  const frequencyRaw = $("editFrequency").value;
+  const maturity = $("editMaturity").value;
+  const bond = {
+    ...existing,
+    symbol,
+    aliases: Array.from(new Set([symbol, ...aliases])),
+    issuer: $("editIssuer").value || existing.issuer || "",
+    shortIssuer: existing.shortIssuer || ($("editIssuer").value || "").split(" ").slice(0, 2).join(" "),
+    sector: $("editSector").value || existing.sector || "",
+    currency: existing.currency || "USD MEP",
+    coupon: couponRaw === "" ? existing.coupon : Number(couponRaw),
+    maturity: maturity || existing.maturity || "",
+    frequency: frequencyRaw === "" ? existing.frequency : Number(frequencyRaw),
+    dayCount: existing.dayCount || "30/360",
+    amortization: existing.amortization?.length ? existing.amortization : (maturity ? [{ date: maturity, percent: 1 }] : []),
+    rating: $("editRating").value || existing.rating || "",
+    ratingAgency: $("editRatingAgency").value || existing.ratingAgency || "",
+    law: $("editLaw").value || existing.law || "",
+    sourceStatus: "editado-manual",
+    notes: existing.notes || "Ficha cargada desde editor rápido. Validar contra prospecto / aviso de resultados.",
+  };
+  const data = await api("/api/bonds/upsert", { method: "POST", body: JSON.stringify({ bond }) });
+  await loadBonds();
+  await refreshPrices(true);
+  return data;
+}
+
 async function loadBonds() {
   const data = await api("/api/bonds");
   bonds = data.bonds || [];
   renderTechPreview();
+  renderMissingTechnical();
   renderSymbols();
 }
 
@@ -96,6 +203,7 @@ async function refreshPrices(silent = false) {
     marketData = await api("/api/prices");
     $("mepValue").textContent = marketData.mep ? `$ ${fmtNum(marketData.mep, 2)}` : "—";
     renderTable();
+    renderMissingTechnical();
     renderSymbols();
     if (marketData.errors?.length) {
       setStatus("warn", "Precios con advertencias", marketData.errors.join(" | "));
@@ -108,13 +216,13 @@ async function refreshPrices(silent = false) {
 }
 
 function rowBySymbol(symbol) {
-  const s = String(symbol || "").trim().toUpperCase();
-  return (marketData?.rows || []).find((r) => r.symbol === s);
+  const s = normalizeSymbol(symbol);
+  return (marketData?.rows || []).find((r) => rowMatchesSymbol(r, s));
 }
 
 function bondBySymbol(symbol) {
-  const s = String(symbol || "").trim().toUpperCase();
-  return bonds.find((b) => String(b.symbol).toUpperCase() === s);
+  const s = normalizeSymbol(symbol);
+  return bonds.find((b) => bondMatchesSymbol(b, s));
 }
 
 function calcRotation() {
@@ -230,6 +338,15 @@ function bindEvents() {
   $("manualPrices").addEventListener("change", (e) => {
     $("manualSellPrice").disabled = !e.target.checked;
     $("manualBuyPrice").disabled = !e.target.checked;
+  });
+  $("saveTech").addEventListener("click", async () => {
+    try {
+      setStatus("muted", "Guardando ficha técnica...", "Editor manual");
+      const data = await saveTechFromEditor();
+      setStatus("ok", "Ficha técnica guardada", `${data.action === "created" ? "Creada" : "Actualizada"}: ${data.bond.symbol}`);
+    } catch (e) {
+      setStatus("error", "Error al guardar ficha", e.message);
+    }
   });
   $("exportJson").addEventListener("click", () => download("bonds.json", JSON.stringify(bonds, null, 2)));
   $("importJson").addEventListener("change", async (ev) => {
