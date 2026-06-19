@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import fsSync from "fs";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import pdfParse from "pdf-parse";
 import cron from "node-cron";
 
