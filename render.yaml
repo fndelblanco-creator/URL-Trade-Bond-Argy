@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: bonos-rotacion-dashboard
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATA912_BASE_URL
+        value: https://data912.com
+      - key: AUTO_SYNC_FIX
+        value: "false"
+      - key: AUTO_SYNC_CNV
+        value: "false"
