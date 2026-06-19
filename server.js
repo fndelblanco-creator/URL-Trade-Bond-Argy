@@ -296,6 +296,41 @@ function spreadPct(bid, ask) {
   return (ask - bid) / mid;
 }
 
+// En Data912, algunas especies corporativas que terminan en O pueden venir con precio
+// expresado en ARS. Para el dashboard normalizamos todo a USD MEP.
+// Regla práctica: precio por 100 VN de un bono en USD suele estar cerca de 30-200.
+// Si el número viene arriba de 500, lo tratamos como precio en ARS y lo dividimos por MEP.
+const MAX_REASONABLE_USD_BOND_PRICE = 500;
+
+function needsArsToMepConversion(value) {
+  return value !== null && value !== undefined && Number(value) > MAX_REASONABLE_USD_BOND_PRICE;
+}
+
+function normalizePriceToUsdMep(value, mep, forceArs = false) {
+  const n = cleanNumber(value);
+  if (n === null || n <= 0) return { value: null, converted: false, unavailable: false };
+  if (forceArs || needsArsToMepConversion(n)) {
+    if (!mep || mep <= 0) return { value: null, converted: false, unavailable: true };
+    return { value: n / mep, converted: true, unavailable: false };
+  }
+  return { value: n, converted: false, unavailable: false };
+}
+
+function normalizeRowPricesToUsdMep(row, mep, forceArs = false) {
+  const last = normalizePriceToUsdMep(row.last, mep, forceArs);
+  const bid = normalizePriceToUsdMep(row.bid, mep, forceArs);
+  const ask = normalizePriceToUsdMep(row.ask, mep, forceArs);
+  const converted = last.converted || bid.converted || ask.converted;
+  const unavailable = last.unavailable || bid.unavailable || ask.unavailable;
+  return {
+    lastUsd: last.value,
+    bidUsd: bid.value,
+    askUsd: ask.value,
+    converted,
+    unavailable,
+  };
+}
+
 async function getPrices() {
   if (cache.prices.data && Date.now() - cache.prices.ts < 15_000) return cache.prices.data;
   const errors = [];
@@ -329,20 +364,28 @@ async function getPrices() {
   for (const base of bases) {
     const usd = usdMap.get(base);
     const ars = arsMap.get(base);
-    let chosen = usd;
-    let priceSource = "USD MEP directo";
-    if (!chosen && ars && mep) {
-      chosen = { ...ars, symbol: `${ars.symbol}*`, syntheticSymbol: ars.symbol };
-      priceSource = "ARS / MEP";
-    }
+
+    // Preferimos la especie O cuando existe. Si Data912 la informa en ARS, la convertimos.
+    // Si no existe especie O, usamos la especie en pesos y la convertimos por MEP.
+    let chosen = usd || ars;
     if (!chosen) continue;
+
+    const forceArs = !usd;
+    const normalizedPrices = normalizeRowPricesToUsdMep(chosen, mep, forceArs);
+    if (normalizedPrices.unavailable || (!normalizedPrices.lastUsd && !normalizedPrices.bidUsd && !normalizedPrices.askUsd)) {
+      continue;
+    }
+
     const symbol = normalizeSymbol(usd?.symbol || `${base}O`);
-    const convert = !usd && ars && mep;
-    const div = convert ? mep : 1;
-    const lastUsd = chosen.last ? chosen.last / div : null;
-    const bidUsd = chosen.bid ? chosen.bid / div : null;
-    const askUsd = chosen.ask ? chosen.ask / div : null;
+    const lastUsd = normalizedPrices.lastUsd;
+    const bidUsd = normalizedPrices.bidUsd;
+    const askUsd = normalizedPrices.askUsd;
     const tablePrice = bidUsd && askUsd ? (bidUsd + askUsd) / 2 : lastUsd || bidUsd || askUsd;
+
+    let priceSource = "USD MEP directo";
+    if (usd && normalizedPrices.converted) priceSource = "Especie O convertida: ARS / MEP";
+    if (!usd && ars) priceSource = "Especie ARS convertida: ARS / MEP";
+
     const tech = bondBySymbol.get(symbol) || bondBySymbol.get(`${base}O`) || null;
     const metrics = tech ? calcMetrics(tech, tablePrice, today) : calcMetrics(null, null, today);
     out.push({
@@ -354,13 +397,16 @@ async function getPrices() {
       lastUsd,
       bidUsd,
       askUsd,
+      rawLast: chosen.last,
+      rawBid: chosen.bid,
+      rawAsk: chosen.ask,
       volume: chosen.volume,
       qBid: chosen.qBid,
       qAsk: chosen.qAsk,
       pctChange: chosen.pctChange,
       spread: spreadPct(bidUsd, askUsd),
       priceSource,
-      mepUsed: convert ? mep : null,
+      mepUsed: normalizedPrices.converted ? mep : null,
       maturity: tech?.maturity || null,
       coupon: tech?.coupon ?? null,
       frequency: tech?.frequency ?? null,
@@ -483,11 +529,17 @@ function extractFixFromText(text, issuer, keywords = []) {
   const issuerParts = String(issuer || "").split(/\s+/).filter((w) => w.length > 4).slice(0, 3);
   const issuerHit = issuerParts.some((w) => normalized.toLowerCase().includes(w.toLowerCase()));
   const keywordHit = keywords.length ? includesAnyKeyword(normalized, keywords) : true;
-  const ratingRegex = /(?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar)?/gi;
-  const matches = normalized.match(ratingRegex) || [];
-  const filtered = matches
-    .map((m) => m.replace(/\s+/g, "").replace(/arg$/i, "(arg)"))
-    .filter((m) => !/^AR$/i.test(m));
+  // FIX suele publicar calificaciones locales tipo AAA(arg), AA(arg), A(arg), etc.
+  // Evitamos tomar letras sueltas de la página como rating, que era lo que generaba valores erróneos como "d".
+  const localRatingRegex = /\b(?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar)\b/gi;
+  const globalRatingRegex = /\b(?:AAA|AA|BBB|BB|CCC|CC|C)(?:[+-])?\b/g;
+  const matches = [
+    ...(normalized.match(localRatingRegex) || []),
+    ...(normalized.match(globalRatingRegex) || []),
+  ];
+  const filtered = Array.from(new Set(matches
+    .map((m) => m.replace(/\s+/g, "").replace(/\.ar$/i, ".ar").replace(/arg$/i, "(arg)"))
+    .filter((m) => !/^AR$/i.test(m))));
   let outlook = null;
   const outlookMatch = normalized.match(/Perspectiva\s+(Estable|Positiva|Negativa)|Rating\s+Watch\s+(Positivo|Negativo|En\s+Evoluci[oó]n)/i);
   if (outlookMatch) outlook = outlookMatch[1] || outlookMatch[2];
