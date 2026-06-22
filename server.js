@@ -13,12 +13,13 @@ const DATA912_BASE_URL = process.env.DATA912_BASE_URL || "https://data912.com";
 const DATA_DIR = path.join(__dirname, "data");
 const BONDS_PATH = path.join(DATA_DIR, "bonds.json");
 const ISSUER_METRICS_PATH = path.join(DATA_DIR, "issuer_metrics.json");
+const ISSUER_SOURCES_PATH = path.join(DATA_DIR, "issuer_sources.json");
 
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const cache = { prices: { ts: 0, data: null }, bonds: { ts: 0, data: null }, issuerMetrics: { ts: 0, data: null } };
+const cache = { prices: { ts: 0, data: null }, bonds: { ts: 0, data: null }, issuerMetrics: { ts: 0, data: null }, issuerSources: { ts: 0, data: null }, fixRatings: { ts: 0, data: new Map() } };
 const MAX_REASONABLE_USD_BOND_PRICE = 500;
 const USD_DIRECT_MIN_DEPTH = Number(process.env.USD_DIRECT_MIN_DEPTH || 1);
 
@@ -166,6 +167,137 @@ function creditQualityLabel(score) {
   if (n >= 5.0) return "Media";
   if (n >= 3.0) return "Baja/Media";
   return "Baja";
+}
+function ratingToScore(rating) {
+  const r = String(rating || "").toUpperCase().replace(/\s+/g, "");
+  const scale = [
+    ["AAA(ARG)", 10], ["AA+(ARG)", 9.5], ["AA(ARG)", 9], ["AA-(ARG)", 8.5],
+    ["A+(ARG)", 8], ["A(ARG)", 7.5], ["A-(ARG)", 7],
+    ["BBB+(ARG)", 6.5], ["BBB(ARG)", 6], ["BBB-(ARG)", 5.5],
+    ["BB+(ARG)", 5], ["BB(ARG)", 4.5], ["BB-(ARG)", 4],
+    ["B+(ARG)", 3.5], ["B(ARG)", 3], ["B-(ARG)", 2.5],
+    ["CCC(ARG)", 2], ["CC(ARG)", 1], ["C(ARG)", 0.5], ["D(ARG)", 0]
+  ];
+  const hit = scale.find(([k]) => r.includes(k));
+  return hit ? hit[1] : null;
+}
+async function loadIssuerSources() {
+  if (cache.issuerSources.data && Date.now() - cache.issuerSources.ts < 60_000) return cache.issuerSources.data;
+  try {
+    const raw = await fs.readFile(ISSUER_SOURCES_PATH, "utf8");
+    const data = JSON.parse(raw);
+    cache.issuerSources = { ts: Date.now(), data: Array.isArray(data) ? data : [] };
+    return cache.issuerSources.data;
+  } catch {
+    cache.issuerSources = { ts: Date.now(), data: [] };
+    return [];
+  }
+}
+function findIssuerSource(sources, tech) {
+  if (!tech) return null;
+  const candidates = [tech.scoreKey, tech.shortIssuer, tech.issuer, tech.symbol, ...(Array.isArray(tech.aliases) ? tech.aliases : [])].filter(Boolean).map(simplifyText);
+  return sources.find(src => [src.key, src.issuer, src.shortIssuer, ...(Array.isArray(src.aliases) ? src.aliases : [])].filter(Boolean).map(simplifyText).some(a => candidates.some(c => c.includes(a) || a.includes(c)))) || null;
+}
+function parseFixDate(text) {
+  const m = String(text || "").match(/(\d{2})[-\/](ene|feb|mar|abr|may|jun|jul|ago|sept|sep|oct|nov|dic)[-\/](\d{2,4})/i);
+  if (!m) return null;
+  const months = { ene:"01", feb:"02", mar:"03", abr:"04", may:"05", jun:"06", jul:"07", ago:"08", sept:"09", sep:"09", oct:"10", nov:"11", dic:"12" };
+  const y = m[3].length === 2 ? `20${m[3]}` : m[3];
+  return `${y}-${months[m[2].toLowerCase()]}-${m[1]}`;
+}
+function normalizeFixRating(raw) {
+  if (!raw) return null;
+  let r = String(raw).replace(/\s+/g, "").replace(/arg$/i, "(arg)");
+  r = r.replace(/\.ar$/i, "(arg)");
+  r = r.replace(/\(ARG\)/i, "(arg)");
+  return r;
+}
+function extractFixRatingFromIssuerPage(html, issuerName = "") {
+  const $ = cheerio.load(html);
+  const text = normalizeText($.text());
+  const issuer = normalizeText($('h1').first().text()) || issuerName;
+  const sectorMatch = text.match(/Sector:\s*([^ÁÉÍÓÚáéíóú]*?)(?:Área:|País:)/i);
+  const ratingRegex = /Calificaci[oó]n Nacional.*?Fecha\s*(\d{2}[-\/][A-Za-záéíóúñ]+[-\/]\d{2,4}).*?Plazo\s*Largo Plazo.*?Rating\s*((?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar)).*?Perspectiva\s*(Perspectiva\s+[A-Za-zÁÉÍÓÚáéíóúñ]+|N\.?C|Estable|Positiva|Negativa|En evolucion)?/i;
+  let m = text.match(ratingRegex);
+  if (!m) {
+    const fallback = text.match(/Largo Plazo\s*Rating\s*((?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar)).*?Perspectiva\s*(Perspectiva\s+[A-Za-zÁÉÍÓÚáéíóúñ]+|N\.?C|Estable|Positiva|Negativa|En evolucion)?/i);
+    if (fallback) m = [fallback[0], null, fallback[1], fallback[2]];
+  }
+  if (!m) return null;
+  const rating = normalizeFixRating(m[2]);
+  return {
+    issuer,
+    sector: sectorMatch ? normalizeText(sectorMatch[1]) : null,
+    rating,
+    outlook: normalizeText(m[3] || ""),
+    asOf: m[1] ? parseFixDate(m[1]) : null,
+    ratingScore: ratingToScore(rating),
+  };
+}
+function extractFixRatingFromListPage(html, issuerName = "") {
+  const $ = cheerio.load(html);
+  const text = normalizeText($.text());
+  const ratingPattern = /([A-ZÁÉÍÓÚÑa-záéíóúñ0-9 .,&-]{3,80}?S\.?A\.?[A-ZÁÉÍÓÚÑa-záéíóúñ0-9 .,&-]*)\s+(\d{4}-\d{2}-\d{2})\s+Argentina\s+Finanzas Corporativas.*?Emisor\s+((?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar))\s+(Perspectiva\s+[A-Za-zÁÉÍÓÚáéíóúñ]+|N\.?C)?/i;
+  const m = text.match(ratingPattern);
+  if (!m) {
+    const r = text.match(/Emisor\s+((?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar))\s+(Perspectiva\s+[A-Za-zÁÉÍÓÚáéíóúñ]+|N\.?C)?/i);
+    if (!r) return null;
+    const rating = normalizeFixRating(r[1]);
+    return { issuer: issuerName, rating, outlook: normalizeText(r[2] || ""), asOf: null, ratingScore: ratingToScore(rating) };
+  }
+  const rating = normalizeFixRating(m[3]);
+  return { issuer: normalizeText(m[1]) || issuerName, rating, outlook: normalizeText(m[4] || ""), asOf: m[2], ratingScore: ratingToScore(rating) };
+}
+async function fetchFixRatingForTech(tech, sources = []) {
+  const issuer = tech?.issuer || tech?.shortIssuer;
+  if (!issuer) return null;
+  const key = simplifyText(tech.scoreKey || issuer);
+  const cached = cache.fixRatings.data.get(key);
+  if (cached && Date.now() - cached.ts < 6 * 60 * 60 * 1000) return cached.data;
+  const source = findIssuerSource(sources, tech);
+  const urls = [];
+  if (source?.fixUrl) urls.push(source.fixUrl);
+  if (source?.fixIssuerId) urls.push(`https://www.fixscr.com/emisor/view?id=${source.fixIssuerId}&type=emisor`);
+  urls.push(`https://www.fixscr.com/calificaciones?CalificacionesWebSearch%5Bentidades_name%5D=${encodeURIComponent(issuer)}&CalificacionesWebSearch%5Bsection_id%5D=1&CalificacionesWebSearch%5Btype%5D=1&dp-1-per-page=20&sort=-national_rating_date`);
+  for (const url of [...new Set(urls)]) {
+    try {
+      const html = await fetchText(url);
+      const data = url.includes('/emisor/view') ? extractFixRatingFromIssuerPage(html, issuer) : extractFixRatingFromListPage(html, issuer);
+      if (data?.rating) {
+        const out = { ...data, sourceType: 'FIX', source: url, fetchedAt: nowIso() };
+        cache.fixRatings.data.set(key, { ts: Date.now(), data: out });
+        return out;
+      }
+    } catch (e) { /* probar siguiente fuente */ }
+  }
+  const out = null;
+  cache.fixRatings.data.set(key, { ts: Date.now(), data: out });
+  return out;
+}
+async function loadFixRatingsForBonds(bonds) {
+  if (process.env.AUTO_FIX_RATINGS === '0') return new Map();
+  const sources = await loadIssuerSources();
+  const unique = [];
+  const seen = new Set();
+  for (const b of bonds) {
+    const key = simplifyText(b.scoreKey || b.issuer || b.shortIssuer || b.symbol);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    unique.push(b);
+  }
+  const map = new Map();
+  const limit = Number(process.env.FIX_RATING_CONCURRENCY || 4);
+  let idx = 0;
+  async function worker() {
+    while (idx < unique.length) {
+      const b = unique[idx++];
+      const key = simplifyText(b.scoreKey || b.issuer || b.shortIssuer || b.symbol);
+      const r = await fetchFixRatingForTech(b, sources);
+      if (r) map.set(key, r);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, unique.length) }, worker));
+  return map;
 }
 
 
@@ -461,6 +593,7 @@ async function getPrices() {
   }
   const bonds = await loadBonds();
   const issuerMetrics = await loadIssuerMetrics();
+  const fixRatings = await loadFixRatingsForBonds(bonds);
   const today = new Date();
   const basesFromBonds = new Set();
   for (const b of bonds) for (const a of symbolAliasesOf(b)) basesFromBonds.add(baseSymbol(a));
@@ -479,6 +612,8 @@ async function getPrices() {
     const problems = technicalProblems(tech);
     const warnings = validationWarnings(tech);
     const rStatus = ratingStatus(tech);
+    const fixRating = tech ? fixRatings.get(simplifyText(tech.scoreKey || tech.issuer || tech.shortIssuer || tech.symbol)) : null;
+    const effectiveRating = rStatus.status === "validado" ? { rating: tech?.rating, agency: tech?.ratingAgency || "FIX", source: rStatus.source, status: "validado", outlook: tech?.ratingOutlook || null, ratingScore: ratingToScore(tech?.rating) } : (fixRating ? { rating: fixRating.rating, agency: "FIX", source: fixRating.source, status: "validado", outlook: fixRating.outlook, ratingScore: fixRating.ratingScore } : { rating: null, agency: null, source: rStatus.source, status: rStatus.status, outlook: null, ratingScore: null });
     const validation = validationBadge(tech, problems);
     out.push({
       symbol: displaySymbol, base, canonicalSymbol: tech?.symbol || null, aliases: tech ? symbolAliasesOf(tech) : [],
@@ -493,11 +628,11 @@ async function getPrices() {
       maturity: tech?.maturity || null, coupon: tech?.coupon ?? null, couponMonths: tech?.couponMonths || null, frequency: tech?.frequency ?? null,
       amortizationType: tech?.amortizationType || (tech?.amortization?.length === 1 ? "Bullet" : "Amortizable"), amortizationApprox: !!tech?.amortizationApprox,
       dollar: tech?.dollar || null, law: tech?.law || null, lawValidationStatus: sourceStatusOf(tech, "law") || null, lawSource: sourceNameOf(tech, "law"),
-      rating: rStatus.status === "validado" ? tech?.rating : null, ratingDisplay: rStatus.label, ratingAgency: rStatus.status === "validado" ? tech?.ratingAgency : null, ratingValidationStatus: rStatus.status, ratingSource: rStatus.source, legacySeedRating: tech?.legacySeedRating || null, minLot: tech?.minLot ?? null,
-      creditKey: credit?.key || null, creditView: credit?.view || null, creditViewScore: credit?.viewScore ?? null,
-      scoreFundamentals: credit?.scoreFundamentals ?? null, scoreQualitative: credit?.scoreQualitative ?? null, scoreTotal: credit?.scoreTotal ?? null, scoreChangeYoY: credit?.scoreChangeYoY ?? null, creditQuality: creditQualityLabel(credit?.scoreTotal),
+      rating: effectiveRating.rating, ratingDisplay: effectiveRating.rating || "Pendiente", ratingAgency: effectiveRating.agency, ratingValidationStatus: effectiveRating.status, ratingSource: effectiveRating.source, ratingOutlook: effectiveRating.outlook, ratingScore: effectiveRating.ratingScore, legacySeedRating: tech?.legacySeedRating || null, minLot: tech?.minLot ?? null,
+      creditKey: credit?.key || null, creditView: credit?.view || (effectiveRating.ratingScore !== null ? creditQualityLabel(effectiveRating.ratingScore) : null), creditViewScore: credit?.viewScore ?? null,
+      scoreFundamentals: credit?.scoreFundamentals ?? null, scoreQualitative: credit?.scoreQualitative ?? null, scoreTotal: credit?.scoreTotal ?? effectiveRating.ratingScore ?? null, scoreChangeYoY: credit?.scoreChangeYoY ?? null, creditQuality: creditQualityLabel(credit?.scoreTotal ?? effectiveRating.ratingScore),
       netDebtEbitda: credit?.netDebtEbitda ?? null, netDebtEbitdaChangeYoY: credit?.netDebtEbitdaChangeYoY ?? null, cashStDebt: credit?.cashStDebt ?? null, cashStDebtChangeYoY: credit?.cashStDebtChangeYoY ?? null, ebitdaInterest: credit?.ebitdaInterest ?? null, ebitdaInterestChangeYoY: credit?.ebitdaInterestChangeYoY ?? null,
-      creditMetricsAsOf: credit?.asOf || null, creditMetricsSource: credit?.source || null, creditMetricsSourceType: credit?.sourceType || null, creditMetricsStatus: credit ? "validado" : "pendiente FIX/CNV", tirPerScore: metrics.tir && credit?.scoreTotal ? metrics.tir / credit.scoreTotal : null,
+      creditMetricsAsOf: credit?.asOf || fixRating?.asOf || null, creditMetricsSource: credit?.source || (fixRating ? `${fixRating.source} (rating FIX; métricas financieras pendientes)` : null), creditMetricsSourceType: credit?.sourceType || (fixRating ? "FIX_RATING_ONLY" : null), creditMetricsStatus: credit ? "validado" : (fixRating ? "rating FIX validado; métricas financieras pendientes" : "pendiente FIX/CNV"), tirPerScore: metrics.tir && (credit?.scoreTotal || effectiveRating.ratingScore) ? metrics.tir / (credit?.scoreTotal || effectiveRating.ratingScore) : null,
       sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"), dataQuality: tech?.dataQuality || null, technicalValidationStatus: tech?.technicalValidationStatus || null, technicalSource: tech?.technicalSource || tech?.sourceStatus || null,
       validationStatus: problems.length ? problems.join("; ") : (warnings.length ? warnings.join("; ") : "OK"),
       tir: metrics.tir, durationMod: metrics.durationMod, accrued: metrics.accrued, dirtyPrice: metrics.dirtyPrice,
@@ -522,15 +657,12 @@ function extractRatingFromFixText(text) {
 async function syncFixForBond(bond) {
   const issuer = bond?.issuer || bond?.shortIssuer;
   if (!issuer) return { ok: false, message: "Falta emisor" };
-  const url = `https://www.fixscr.com/calificaciones?search=${encodeURIComponent(issuer)}`;
+  const sources = await loadIssuerSources();
   try {
-    const html = await fetchText(url);
-    const $ = cheerio.load(html);
-    const text = $.text();
-    const rating = extractRatingFromFixText(text);
-    if (!rating) return { ok: false, message: "No se detectó rating FIX", url };
-    return { ok: true, patch: { rating, ratingAgency: "FIX", ratingUpdatedAt: nowIso(), ratingSource: url, ratingValidationStatus: "validado", fieldSources: { ...(bond.fieldSources || {}), rating: { status: "validado", sourceType: "FIX", source: url, note: "Rating extraído automáticamente desde FIX; revisar instrumento vs. emisor antes de usar productivamente." } } }, url };
-  } catch (e) { return { ok: false, message: e.message, url }; }
+    const data = await fetchFixRatingForTech(bond, sources);
+    if (!data?.rating) return { ok: false, message: "No se detectó rating FIX", url: data?.source || null };
+    return { ok: true, patch: { rating: data.rating, ratingAgency: "FIX", ratingOutlook: data.outlook, ratingScore: data.ratingScore, ratingUpdatedAt: nowIso(), ratingSource: data.source, ratingValidationStatus: "validado", fieldSources: { ...(bond.fieldSources || {}), rating: { status: "validado", sourceType: "FIX", source: data.source, date: data.asOf, note: "Rating extraído desde página pública de FIX. El scoring financiero requiere métricas de FIX/CNV." } } }, url: data.source };
+  } catch (e) { return { ok: false, message: e.message }; }
 }
 async function syncOne(symbol, mode = "fix") {
   const bonds = await loadBonds();
@@ -550,7 +682,7 @@ async function syncOne(symbol, mode = "fix") {
   return { ok: true, symbol: bond.symbol, patch, reports };
 }
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5.9" }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v6.0" }));
 app.get("/api/bonds", async (_req, res) => { try { res.json({ ok: true, bonds: await loadBonds() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.get("/api/issuer-metrics", async (_req, res) => { try { res.json({ ok: true, metrics: await loadIssuerMetrics() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.post("/api/bonds", async (req, res) => { try { if (!Array.isArray(req.body?.bonds)) return res.status(400).json({ ok: false, error: "Enviar { bonds: [...] }" }); await saveBonds(req.body.bonds); cache.prices = { ts: 0, data: null }; res.json({ ok: true, count: req.body.bonds.length }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });

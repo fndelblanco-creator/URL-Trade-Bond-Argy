@@ -1,29 +1,11 @@
-# Dashboard de rotación de bonos corporativos — Cloud v5.9
+# Dashboard de rotación de bonos corporativos — Cloud v6.0
 
-Esta versión limpia la base semilla para evitar mostrar datos no verificados como si fueran oficiales.
+Cambios principales:
 
-## Cambios v5.9
+- Ratings FIX automáticos en modo best-effort desde la página pública de FIX.
+- Ya no depende del informe cargado por el usuario para rating ni scoring.
+- El score mostrado puede usar `ratingScore` cuando solo hay rating FIX validado.
+- Las métricas financieras `ND/EBITDA`, `Caja/ST Debt` y `EBITDA/Intereses` siguen pendientes hasta integrar extractor de informes FIX PDF o estados contables CNV.
+- Se agrega `data/issuer_sources.json` para mapear emisores con fuentes FIX/CNV.
 
-- Ratings no verificados removidos de la visualización.
-- Los ratings quedan como **Pendiente FIX/CNV** salvo que tengan fuente formal validada.
-- Se agrega estado de validación por bono: **Validado**, **Pendiente CNV/FIX**, **Ficha incompleta** o **Sin ficha**.
-- RUCDO conserva la corrección de ley a **NY**, marcada como corrección manual pendiente de validación formal CNV.
-- Se separan problemas de cálculo de advertencias de validación. Una ficha puede calcular TIR/duration, pero seguir pendiente de auditoría formal.
-- El scoring crediticio solo se muestra si viene de fuente aceptada: `FIX`, `CNV_EEFF`, `FIX_CNV` o `MANUAL_VERIFIED`.
-- No se usa el informe de corporativos cargado por el usuario como fuente de scoring.
-
-## Criterio de fuentes
-
-- **Precio:** Data912, hasta migrar a BYMA/Tecval.
-- **Ficha técnica:** pendiente de validación CNV/prospecto/aviso de resultados.
-- **Rating:** pendiente FIX/CNV salvo fuente formal.
-- **Scoring:** cálculo propio solo con métricas verificadas de FIX, CNV/EEFF o carga manual validada.
-
-## Deploy
-
-En Render mantener:
-
-- Build Command: `npm install`
-- Start Command: `npm start`
-
-Subir a GitHub el contenido de este ZIP, no el ZIP cerrado.
+Importante: el rating desde FIX se puede traer desde HTML público. El scoring financiero completo requiere extraer métricas desde informes de FIX o EEFF de CNV; no debe inventarse.

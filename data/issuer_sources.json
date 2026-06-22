@@ -1,0 +1,20 @@
+[
+  { "key": "PLUS", "issuer": "Pluspetrol S.A.", "shortIssuer": "Pluspetrol", "fixIssuerId": 4393, "fixUrl": "https://www.fixscr.com/emisor/view?id=4393&type=emisor", "cnvCuit": "30678224010" },
+  { "key": "PAM", "issuer": "Pampa Energia S.A.", "shortIssuer": "Pampa", "fixIssuerId": 1754, "fixUrl": "https://www.fixscr.com/emisor/view?id=1754&type=emisor" },
+  { "key": "VIST", "issuer": "Vista Energy Argentina S.A.U.", "shortIssuer": "Vista Energy", "fixIssuerId": 3823, "fixUrl": "https://www.fixscr.com/emisor/view?id=3823&type=emisor" },
+  { "key": "TECO", "issuer": "Telecom Argentina S.A.", "shortIssuer": "Telecom", "fixIssuerId": 619, "fixUrl": "https://www.fixscr.com/emisor/view?id=619&type=emisor" },
+  { "key": "MSUE", "issuer": "MSU Energy S.A.", "shortIssuer": "MSU Energy", "fixIssuerId": 1830, "fixUrl": "https://www.fixscr.com/emisor/view?id=1830&type=emisor" },
+  { "key": "TECP", "issuer": "Tecpetrol S.A.", "shortIssuer": "Tecpetrol", "fixIssuerId": 2049, "fixUrl": "https://www.fixscr.com/emisor/view?id=2049&type=emisor" },
+  { "key": "CGC", "issuer": "Compañía General de Combustibles S.A.", "shortIssuer": "CGC" },
+  { "key": "YPF", "issuer": "YPF S.A.", "shortIssuer": "YPF" },
+  { "key": "PAE", "issuer": "Pan American Energy", "shortIssuer": "Pan American Energy" },
+  { "key": "TGS", "issuer": "Transportadora de Gas del Sur S.A.", "shortIssuer": "TGS" },
+  { "key": "YPFL", "issuer": "YPF Energía Eléctrica S.A.", "shortIssuer": "YPF Energía Eléctrica" },
+  { "key": "GENN", "issuer": "Genneia S.A.", "shortIssuer": "Genneia" },
+  { "key": "ARCOR", "issuer": "Arcor S.A.I.C.", "shortIssuer": "Arcor" },
+  { "key": "IRSA", "issuer": "IRSA", "shortIssuer": "IRSA" },
+  { "key": "ALUAR", "issuer": "Aluar Aluminio Argentino S.A.I.C.", "shortIssuer": "Aluar" },
+  { "key": "CRESUD", "issuer": "Cresud S.A.", "shortIssuer": "Cresud" },
+  { "key": "MACRO", "issuer": "Banco Macro S.A.", "shortIssuer": "Banco Macro" },
+  { "key": "GALICIA", "issuer": "Banco de Galicia y Buenos Aires S.A.U.", "shortIssuer": "Banco Galicia" }
+]

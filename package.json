@@ -1,6 +1,6 @@
 {
   "name": "bonos-rotacion-cloud",
-  "version": "5.9.0",
+  "version": "6.0.0",
   "type": "module",
   "description": "Dashboard cloud para rotacion de bonos corporativos con limpieza de datos no verificados y validacion CNV/FIX pendiente.",
   "main": "server.js",
