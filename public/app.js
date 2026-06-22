@@ -1,5 +1,6 @@
 let marketData = null;
 let bonds = [];
+let issuerMetrics = [];
 let autoTimer = null;
 
 const $ = (id) => document.getElementById(id);
@@ -12,6 +13,8 @@ function fmtPct(n, digits = 2) {
   if (n === null || n === undefined || Number.isNaN(Number(n))) return "—";
   return `${(Number(n) * 100).toLocaleString("es-AR", { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
 }
+function fmtScore(n) { return fmtNum(n, 1); }
+function fmtRatio(n) { return fmtNum(n, 1); }
 function fmtCoupon(n) { return fmtPct(n, 2); }
 function normalizeSymbol(symbol) { return String(symbol || "").trim().toUpperCase(); }
 function setStatus(type, title, detail = "") {
@@ -77,6 +80,11 @@ function renderTable() {
       <td>${r.dollar || "—"}</td>
       <td>${r.law || "—"}</td>
       <td>${rating}</td>
+      <td>${fmtScore(r.scoreTotal)}</td>
+      <td><span class="view-pill ${viewClass(r.creditView)}">${r.creditView || "—"}</span></td>
+      <td>${fmtRatio(r.netDebtEbitda)}</td>
+      <td>${fmtRatio(r.ebitdaInterest)}</td>
+      <td>${fmtRatio(r.cashStDebt)}</td>
       <td>${r.minLot ? fmtNum(r.minLot, 0) : "—"}</td>
       <td>${r.sector || "—"}</td>
       <td>${fmtNum(r.technicalValue, 2)}</td>
@@ -87,6 +95,29 @@ function renderTable() {
     </tr>`;
   }).join("");
 }
+
+function renderCreditTable() {
+  const tbody = document.querySelector("#creditTable tbody");
+  if (!tbody) return;
+  const q = ($("creditSearch")?.value || "").trim().toLowerCase();
+  const rows = (issuerMetrics || []).filter((m) => {
+    const text = `${m.issuer} ${m.sector} ${m.view} ${m.key}`.toLowerCase();
+    return !q || text.includes(q);
+  });
+  tbody.innerHTML = rows.map((m) => `<tr>
+    <td><strong>${m.issuer || m.key}</strong></td>
+    <td>${m.sector || "—"}</td>
+    <td>${fmtScore(m.scoreFundamentals)}</td>
+    <td>${fmtScore(m.scoreTotal)}</td>
+    <td><span class="view-pill ${viewClass(m.view)}">${m.view || "—"}</span></td>
+    <td>${fmtRatio(m.netDebtEbitda)}</td>
+    <td>${fmtRatio(m.cashStDebt)}</td>
+    <td>${fmtRatio(m.ebitdaInterest)}</td>
+    <td class="${deltaClass(m.scoreChangeYoY, true)}">${m.scoreChangeYoY === null || m.scoreChangeYoY === undefined ? "—" : `${m.scoreChangeYoY > 0 ? "+" : ""}${fmtNum(m.scoreChangeYoY, 1)}`}</td>
+    <td>${m.asOf || "—"}</td>
+  </tr>`).join("");
+}
+
 function renderMissingTechnical() {
   const tbody = document.querySelector("#missingTable tbody");
   if (!tbody) return;
@@ -128,12 +159,18 @@ async function loadBonds() {
   renderTechPreview();
   renderSymbols();
 }
+async function loadIssuerMetrics() {
+  const data = await api("/api/issuer-metrics");
+  issuerMetrics = data.metrics || [];
+  renderCreditTable();
+}
 async function refreshPrices(silent = false) {
   try {
     if (!silent) setStatus("muted", "Consultando precios...", "Data912 / backend cloud");
     marketData = await api("/api/prices");
     $("mepValue").textContent = marketData.mep ? `$ ${fmtNum(marketData.mep, 2)}` : "—";
     renderTable();
+    renderCreditTable();
     renderMissingTechnical();
     renderSymbols();
     if (marketData.errors?.length) setStatus("warn", "Precios con advertencias", marketData.errors.join(" | "));
@@ -176,6 +213,18 @@ function kpi(label, value, tooltip, cls = "") {
 }
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+}
+function deltaClass(delta, higherIsBetter = true) {
+  if (delta === null || delta === undefined || Number.isNaN(Number(delta))) return "";
+  if (Math.abs(Number(delta)) < 1e-9) return "";
+  const good = higherIsBetter ? Number(delta) > 0 : Number(delta) < 0;
+  return good ? "positive" : "negative";
+}
+function viewClass(view) {
+  const v = String(view || "").toLowerCase();
+  if (v.includes("positivo") && !v.includes("negativo")) return "positive";
+  if (v.includes("negativo")) return "negative";
+  return "";
 }
 function calcRotation() {
   const sell = rowBySymbol($("sellSymbol").value);
@@ -221,9 +270,20 @@ function calcRotation() {
   const carryPickup12 = grossSale ? flow12Delta / grossSale : null;
   const breakevenMonths = flow12Delta > 0 ? (totalCosts / flow12Delta) * 12 : null;
   const ratingDir = ratingDirection(sell, buy);
+  const scoreChange = (sell.scoreTotal !== null && sell.scoreTotal !== undefined && buy.scoreTotal !== null && buy.scoreTotal !== undefined) ? buy.scoreTotal - sell.scoreTotal : null;
+  const ndEbitdaChange = (sell.netDebtEbitda !== null && sell.netDebtEbitda !== undefined && buy.netDebtEbitda !== null && buy.netDebtEbitda !== undefined) ? buy.netDebtEbitda - sell.netDebtEbitda : null;
+  const coverageChange = (sell.ebitdaInterest !== null && sell.ebitdaInterest !== undefined && buy.ebitdaInterest !== null && buy.ebitdaInterest !== undefined) ? buy.ebitdaInterest - sell.ebitdaInterest : null;
+  const liquidityChange = (sell.cashStDebt !== null && sell.cashStDebt !== undefined && buy.cashStDebt !== null && buy.cashStDebt !== undefined) ? buy.cashStDebt - sell.cashStDebt : null;
+  const tirPerScoreSell = (sell.tir && sell.scoreTotal) ? sell.tir / sell.scoreTotal : null;
+  const tirPerScoreBuy = (buy.tir && buy.scoreTotal) ? buy.tir / buy.scoreTotal : null;
+  const tirPerScoreChange = (tirPerScoreSell !== null && tirPerScoreBuy !== null) ? tirPerScoreBuy - tirPerScoreSell : null;
   const sectorChange = (sell.sector || "") !== (buy.sector || "");
   const lawChange = (sell.law || "") !== (buy.law || "");
   const tags = strategyTags({tirPickup, durationChange, flow12Delta, ratingDir, sectorChange, lawChange});
+  if (scoreChange !== null && scoreChange > 0.5) tags.push("Mejora score crediticio");
+  if (scoreChange !== null && scoreChange < -0.5) tags.push("Deteriora score crediticio");
+  if (ndEbitdaChange !== null && ndEbitdaChange < -0.25) tags.push("Menor apalancamiento");
+  if (coverageChange !== null && coverageChange > 0.5) tags.push("Mejor cobertura");
 
   const verdict = (() => {
     const positives = [];
@@ -232,9 +292,15 @@ function calcRotation() {
     if (flow12Delta > 0) positives.push("aumenta el flujo de renta de los próximos 12 meses");
     if (durationChange !== null && durationChange < 0) positives.push("reduce duration/DV01");
     if (ratingDir === "Mejora calidad") positives.push("mejora calidad crediticia");
+    if (scoreChange !== null && scoreChange > 0.5) positives.push("mejora el score crediticio");
+    if (ndEbitdaChange !== null && ndEbitdaChange < -0.25) positives.push("reduce apalancamiento del emisor");
+    if (coverageChange !== null && coverageChange > 0.5) positives.push("mejora cobertura de intereses");
     if (tirPickup !== null && tirPickup < 0) alerts.push("resigna TIR");
     if (durationChange !== null && durationChange > 0.75) alerts.push("aumenta sensibilidad a tasa");
     if (ratingDir === "Baja calidad") alerts.push("baja calidad crediticia");
+    if (scoreChange !== null && scoreChange < -0.5) alerts.push("deteriora el score crediticio");
+    if (ndEbitdaChange !== null && ndEbitdaChange > 0.25) alerts.push("sube apalancamiento del emisor");
+    if (coverageChange !== null && coverageChange < -0.5) alerts.push("deteriora cobertura de intereses");
     if (flow12Delta < 0) alerts.push("reduce flujo de renta 12M");
     if (!positives.length && !alerts.length) return "Rotación neutra o incompleta. Validar ficha técnica, liquidez y spreads antes de ejecutar.";
     if (positives.length && !alerts.length) return `La rotación luce favorable porque ${positives.join(", ")}. Confirmar liquidez real y precio ejecutable.`;
@@ -259,6 +325,12 @@ function calcRotation() {
       ${kpi("Cambio DV01", fmtNum(dv01Delta, 2), "Aumento o reducción de sensibilidad total de la posición ante cambios de tasa.", dv01Delta <= 0 ? "positive" : "negative")}
       ${kpi("Breakeven costo", breakevenMonths ? `${fmtNum(breakevenMonths, 1)} meses` : "—", "Cantidad aproximada de meses de mejora de flujo 12M necesaria para recuperar el costo total de la rotación. Solo se calcula si el flujo 12M mejora.")}
       ${kpi("Rating", `${sell.rating || "—"} → ${buy.rating || "—"}`, "Compara calidad crediticia. Puede ser rating de emisor o de instrumento según la ficha disponible.")}
+      ${kpi("Score crediticio", `${fmtScore(sell.scoreTotal)} → ${fmtScore(buy.scoreTotal)}`, "Score financiero/cualitativo del emisor cargado desde la base de métricas 1Q26. Mayor score implica mejor calidad relativa dentro del universo comparado.", scoreChange >= 0 ? "positive" : "negative")}
+      ${kpi("Preferencia", `${sell.creditView || "—"} → ${buy.creditView || "—"}`, "Sesgo relativo cargado en la base de scoring: positivo, neutral con sesgo positivo, neutral con sesgo negativo o negativo.", (buy.creditViewScore ?? 0) >= (sell.creditViewScore ?? 0) ? "positive" : "negative")}
+      ${kpi("ND/EBITDA", `${fmtRatio(sell.netDebtEbitda)}x → ${fmtRatio(buy.netDebtEbitda)}x`, "Apalancamiento neto del emisor. Menor valor suele implicar mejor perfil crediticio.", ndEbitdaChange <= 0 ? "positive" : "negative")}
+      ${kpi("EBITDA/Intereses", `${fmtRatio(sell.ebitdaInterest)}x → ${fmtRatio(buy.ebitdaInterest)}x`, "Cobertura de intereses. Mayor valor implica mayor capacidad de pago de intereses con generación operativa.", coverageChange >= 0 ? "positive" : "negative")}
+      ${kpi("Caja/ST Debt", `${fmtRatio(sell.cashStDebt)}x → ${fmtRatio(buy.cashStDebt)}x`, "Liquidez de corto plazo: caja sobre deuda de corto plazo. Mayor valor implica mejor colchón de liquidez.", liquidityChange >= 0 ? "positive" : "negative")}
+      ${kpi("TIR por score", `${fmtPct(tirPerScoreSell)} → ${fmtPct(tirPerScoreBuy)}`, "TIR dividida por score total. Es una métrica simplificada de compensación de rendimiento por unidad de calidad crediticia; sirve como referencia relativa, no como regla automática.", tirPerScoreChange >= 0 ? "positive" : "negative")}
       ${kpi("Paridad", `${fmtPct(sell.parity)} → ${fmtPct(buy.parity)}`, "Precio limpio sobre valor técnico. Sirve para ver si comprás más caro o barato respecto del valor técnico estimado.")}
       ${kpi("Sector", `${sell.sector || "—"} → ${buy.sector || "—"}`, "Muestra si la rotación cambia exposición sectorial o aumenta concentración.")}
       ${kpi("Ley", `${sell.law || "—"} → ${buy.law || "—"}`, "Compara ley aplicable del bono. Puede afectar protección legal y recupero esperado.")}
@@ -309,7 +381,7 @@ function download(filename, content, type = "application/json") {
 }
 function exportCsv() {
   const rows = marketData?.rows || [];
-  const headers = ["symbol","issuer","priceArs","priceUsdMep","bidUsdMep","askUsdMep","priceCable","tir","durationMod","maturity","amortizationType","coupon","couponMonths","dollar","law","rating","ratingAgency","minLot","sector","technicalValue","residualValue","parity","spread","priceSource"];
+  const headers = ["symbol","issuer","priceArs","priceUsdMep","bidUsdMep","askUsdMep","priceCable","tir","durationMod","maturity","amortizationType","coupon","couponMonths","dollar","law","rating","ratingAgency","scoreFundamentals","scoreTotal","creditView","netDebtEbitda","cashStDebt","ebitdaInterest","minLot","sector","technicalValue","residualValue","parity","spread","priceSource"];
   const csv = [headers.join(","), ...rows.map(r => headers.map(h => JSON.stringify(r[h] ?? "")).join(","))].join("\n");
   download("bonos-mercado-completo.csv", csv, "text/csv");
 }
@@ -331,6 +403,7 @@ function bindEvents() {
   bindIfExists("syncBoth", "click", () => sync("both"));
   bindIfExists("exportCsv", "click", exportCsv);
   bindIfExists("tableSearch", "input", renderTable);
+  bindIfExists("creditSearch", "input", renderCreditTable);
   bindIfExists("priceMode", "change", renderTable);
   bindIfExists("calcRotation", "click", calcRotation);
   bindIfExists("manualPrices", "change", (e) => {
@@ -350,7 +423,7 @@ function bindEvents() {
 }
 async function init() {
   bindEvents();
-  try { await loadBonds(); await refreshPrices(); autoTimer = setInterval(() => refreshPrices(true), 30_000); }
+  try { await loadBonds(); await loadIssuerMetrics(); await refreshPrices(); autoTimer = setInterval(() => refreshPrices(true), 30_000); }
   catch (e) { setStatus("error", "No se pudo iniciar", e.message); }
 }
 init();

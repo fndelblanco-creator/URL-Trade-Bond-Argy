@@ -12,12 +12,13 @@ const PORT = process.env.PORT || 8000;
 const DATA912_BASE_URL = process.env.DATA912_BASE_URL || "https://data912.com";
 const DATA_DIR = path.join(__dirname, "data");
 const BONDS_PATH = path.join(DATA_DIR, "bonds.json");
+const ISSUER_METRICS_PATH = path.join(DATA_DIR, "issuer_metrics.json");
 
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const cache = { prices: { ts: 0, data: null }, bonds: { ts: 0, data: null } };
+const cache = { prices: { ts: 0, data: null }, bonds: { ts: 0, data: null }, issuerMetrics: { ts: 0, data: null } };
 const MAX_REASONABLE_USD_BOND_PRICE = 500;
 const USD_DIRECT_MIN_DEPTH = Number(process.env.USD_DIRECT_MIN_DEPTH || 1);
 
@@ -76,6 +77,45 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
 }
 async function fetchJson(url) { const res = await fetchWithTimeout(url); return res.json(); }
 async function fetchText(url) { const res = await fetchWithTimeout(url); return res.text(); }
+
+async function loadIssuerMetrics() {
+  if (cache.issuerMetrics.data && Date.now() - cache.issuerMetrics.ts < 30_000) return cache.issuerMetrics.data;
+  try {
+    const raw = await fs.readFile(ISSUER_METRICS_PATH, "utf8");
+    const data = JSON.parse(raw);
+    cache.issuerMetrics = { ts: Date.now(), data: Array.isArray(data) ? data : [] };
+    return cache.issuerMetrics.data;
+  } catch {
+    cache.issuerMetrics = { ts: Date.now(), data: [] };
+    return [];
+  }
+}
+function simplifyText(value) {
+  return normalizeText(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+function findIssuerMetrics(metrics, tech) {
+  if (!tech) return null;
+  const candidates = [tech.scoreKey, tech.shortIssuer, tech.issuer, tech.symbol, ...(Array.isArray(tech.aliases) ? tech.aliases : [])].filter(Boolean).map(simplifyText);
+  for (const m of metrics) {
+    const aliases = [m.key, m.issuer, ...(Array.isArray(m.aliases) ? m.aliases : [])].filter(Boolean).map(simplifyText);
+    if (aliases.some(a => candidates.includes(a))) return m;
+  }
+  for (const m of metrics) {
+    const aliases = [m.key, m.issuer, ...(Array.isArray(m.aliases) ? m.aliases : [])].filter(Boolean).map(simplifyText);
+    if (aliases.some(a => candidates.some(c => c.includes(a) || a.includes(c)))) return m;
+  }
+  return null;
+}
+function creditQualityLabel(score) {
+  if (score === null || score === undefined || Number.isNaN(Number(score))) return "Sin score";
+  const n = Number(score);
+  if (n >= 8.5) return "Alta";
+  if (n >= 7.0) return "Media/Alta";
+  if (n >= 5.0) return "Media";
+  if (n >= 3.0) return "Baja/Media";
+  return "Baja";
+}
+
 
 async function loadBonds() {
   if (cache.bonds.data && Date.now() - cache.bonds.ts < 10_000) return cache.bonds.data;
@@ -330,6 +370,7 @@ async function getPrices() {
     groupMap.get(r.base).push(r);
   }
   const bonds = await loadBonds();
+  const issuerMetrics = await loadIssuerMetrics();
   const today = new Date();
   const basesFromBonds = new Set();
   for (const b of bonds) for (const a of symbolAliasesOf(b)) basesFromBonds.add(baseSymbol(a));
@@ -344,6 +385,7 @@ async function getPrices() {
     const displaySymbol = tech?.symbol || prices.selectedSymbol || firstSym;
     const price = prices.priceUsdMep;
     const metrics = tech ? calcMetrics(tech, price, today) : calcMetrics(null, null, today);
+    const credit = findIssuerMetrics(issuerMetrics, tech);
     const problems = technicalProblems(tech);
     out.push({
       symbol: displaySymbol, base, canonicalSymbol: tech?.symbol || null, aliases: tech ? symbolAliasesOf(tech) : [],
@@ -358,6 +400,10 @@ async function getPrices() {
       maturity: tech?.maturity || null, coupon: tech?.coupon ?? null, couponMonths: tech?.couponMonths || null, frequency: tech?.frequency ?? null,
       amortizationType: tech?.amortizationType || (tech?.amortization?.length === 1 ? "Bullet" : "Amortizable"), amortizationApprox: !!tech?.amortizationApprox,
       dollar: tech?.dollar || null, law: tech?.law || null, rating: tech?.rating || null, ratingAgency: tech?.ratingAgency || null, minLot: tech?.minLot ?? null,
+      creditKey: credit?.key || null, creditView: credit?.view || null, creditViewScore: credit?.viewScore ?? null,
+      scoreFundamentals: credit?.scoreFundamentals ?? null, scoreQualitative: credit?.scoreQualitative ?? null, scoreTotal: credit?.scoreTotal ?? null, scoreChangeYoY: credit?.scoreChangeYoY ?? null, creditQuality: creditQualityLabel(credit?.scoreTotal),
+      netDebtEbitda: credit?.netDebtEbitda ?? null, netDebtEbitdaChangeYoY: credit?.netDebtEbitdaChangeYoY ?? null, cashStDebt: credit?.cashStDebt ?? null, cashStDebtChangeYoY: credit?.cashStDebtChangeYoY ?? null, ebitdaInterest: credit?.ebitdaInterest ?? null, ebitdaInterestChangeYoY: credit?.ebitdaInterestChangeYoY ?? null,
+      creditMetricsAsOf: credit?.asOf || null, creditMetricsSource: credit?.source || null, tirPerScore: metrics.tir && credit?.scoreTotal ? metrics.tir / credit.scoreTotal : null,
       sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"), validationStatus: problems.length ? problems.join("; ") : "OK",
       tir: metrics.tir, durationMod: metrics.durationMod, accrued: metrics.accrued, dirtyPrice: metrics.dirtyPrice,
       technicalValue: metrics.technicalValue, residualValue: metrics.residualValue, parity: metrics.parity,
@@ -409,8 +455,9 @@ async function syncOne(symbol, mode = "fix") {
   return { ok: true, symbol: bond.symbol, patch, reports };
 }
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5.4" }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5.7" }));
 app.get("/api/bonds", async (_req, res) => { try { res.json({ ok: true, bonds: await loadBonds() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
+app.get("/api/issuer-metrics", async (_req, res) => { try { res.json({ ok: true, metrics: await loadIssuerMetrics() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.post("/api/bonds", async (req, res) => { try { if (!Array.isArray(req.body?.bonds)) return res.status(400).json({ ok: false, error: "Enviar { bonds: [...] }" }); await saveBonds(req.body.bonds); cache.prices = { ts: 0, data: null }; res.json({ ok: true, count: req.body.bonds.length }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.post("/api/bonds/upsert", async (req, res) => {
   try {

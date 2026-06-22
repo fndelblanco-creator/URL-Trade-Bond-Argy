@@ -144,3 +144,11 @@ code { color:#bae6fd; background:#07101f; padding:2px 5px; border-radius:6px; }
 .strategy-tags span { border:1px solid rgba(56,189,248,.35); background:rgba(56,189,248,.10); color:#dff6ff; border-radius:999px; padding:7px 10px; font-size:12px; font-weight:800; }
 .result-box .result-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
 @media (max-width: 720px) { .result-box .result-grid { grid-template-columns: 1fr; } }
+
+/* v5.7: credit scoring / financial metrics */
+.credit-score-card { margin-top: 20px; }
+.credit-table-wrap { max-height: 420px; }
+.view-pill { display:inline-block; border:1px solid rgba(159,181,213,.35); background:rgba(159,181,213,.10); color:#dbeafe; border-radius:999px; padding:5px 8px; font-size:12px; font-weight:800; }
+.view-pill.positive { color:#86efac; border-color:rgba(34,197,94,.45); background:rgba(34,197,94,.10); }
+.view-pill.negative { color:#fca5a5; border-color:rgba(255,91,91,.45); background:rgba(255,91,91,.10); }
+.credit-score-card table td, .credit-score-card table th { white-space: nowrap; }

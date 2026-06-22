@@ -126,6 +126,11 @@
               <th>Dólar</th>
               <th>Ley</th>
               <th>Rating</th>
+              <th>Score</th>
+              <th>Preferencia</th>
+              <th>ND/EBITDA</th>
+              <th>EBITDA/Int.</th>
+              <th>Caja/ST</th>
               <th>Lámina mín.</th>
               <th>Sector</th>
               <th>Valor técnico</th>
@@ -139,6 +144,36 @@
         </table>
       </div>
     </section>
+
+    <section class="card credit-score-card">
+      <div class="card-head sticky-card-head">
+        <div>
+          <h2>Scoring crediticio</h2>
+          <p>Comparación de métricas financieras por emisor. Base cargada desde el informe corporativo 1Q26; se usa para complementar la rotación.</p>
+        </div>
+        <input id="creditSearch" type="search" placeholder="Buscar emisor / sector" />
+      </div>
+      <div class="table-wrap credit-table-wrap">
+        <table id="creditTable">
+          <thead>
+            <tr>
+              <th>Emisor</th>
+              <th>Sector</th>
+              <th>Score fund.</th>
+              <th>Score total</th>
+              <th>Preferencia</th>
+              <th>ND/EBITDA</th>
+              <th>Caja/ST Debt</th>
+              <th>EBITDA/Int.</th>
+              <th>Var. score a/a</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
   <datalist id="symbolsList"></datalist>

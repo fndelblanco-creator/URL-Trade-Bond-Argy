@@ -1,34 +1,23 @@
-# Dashboard de rotación de bonos corporativos — Cloud v5.6
+# Dashboard de rotación de bonos corporativos — Cloud v5.7
 
-Versión cloud para Render/Node.
+Versión cloud para Render.
 
-## Cambios v5.6
+## Cambios v5.7
 
-- Simulador como bloque principal.
-- Resultado de rotación con comparación **VN actual → VN resultante**.
-- Aclaración de **Venta neta** dentro del tooltip del recuadro.
-- Tooltips en cada recuadro del resultado: al pasar el cursor se explica qué mide cada métrica.
-- Nuevas métricas en resultado:
-  - Precio usado.
-  - Costo total como % de venta bruta.
-  - Diferencia de renta 12M.
-  - Cambio de DV01.
-  - Breakeven de costo en meses.
-  - Tags de estrategia: mayor TIR, acorta duration, mejora renta, cambia rating, etc.
-- Lectura de conveniencia más completa: distingue mejora económica, reducción de riesgo, extensión de duration y cambios de calidad crediticia.
+- Agrega `data/issuer_metrics.json` con métricas crediticias de emisores.
+- Incorpora score fundamental, score total, preferencia relativa y métricas financieras.
+- El panel de mercado muestra: score, preferencia, ND/EBITDA, EBITDA/Intereses y Caja/ST Debt.
+- El resultado del simulador compara métricas financieras del emisor actual vs. destino.
+- Agrega una tabla de scoring crediticio por emisor.
 
-## Deploy
+## Fuentes de datos
 
-Subir a GitHub el contenido de esta carpeta y redeployar en Render.
+- Precios: Data912, mientras no esté disponible BYMA/Tecval.
+- Ficha técnica: `data/bonds.json`.
+- Scoring/métricas: `data/issuer_metrics.json`, cargado inicialmente con datos del informe corporativo 1Q26.
 
-Build Command:
+## Deploy Render
 
-```bash
-npm install
-```
-
-Start Command:
-
-```bash
-npm start
-```
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Root Directory: vacío
