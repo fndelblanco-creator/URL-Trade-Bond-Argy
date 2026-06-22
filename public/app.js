@@ -142,6 +142,41 @@ async function refreshPrices(silent = false) {
     setStatus("error", "Error al consultar precios", e.message);
   }
 }
+function ratingRank(rating) {
+  const r = String(rating || "").toUpperCase();
+  const scale = ["AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-", "BB+", "BB", "BB-", "B+", "B", "B-", "CCC", "CC", "C", "D"];
+  const clean = r.replace("(ARG)", "").trim();
+  const hit = scale.findIndex(x => clean.includes(x));
+  return hit >= 0 ? hit : null;
+}
+function ratingDirection(sell, buy) {
+  const a = ratingRank(sell?.rating);
+  const b = ratingRank(buy?.rating);
+  if (a === null || b === null) return "No comparable";
+  if (b < a) return "Mejora calidad";
+  if (b > a) return "Baja calidad";
+  return "Similar";
+}
+function strategyTags({tirPickup, durationChange, flow12Delta, ratingDir, sectorChange, lawChange}) {
+  const tags = [];
+  if (tirPickup !== null && tirPickup > 0.0025) tags.push("Mayor rendimiento/TIR");
+  if (tirPickup !== null && tirPickup < -0.0025) tags.push("Resigna TIR");
+  if (durationChange !== null && durationChange < -0.35) tags.push("Acorta duration");
+  if (durationChange !== null && durationChange > 0.35) tags.push("Extiende duration");
+  if (flow12Delta > 0) tags.push("Mejora renta 12M");
+  if (flow12Delta < 0) tags.push("Menor renta 12M");
+  if (ratingDir === "Mejora calidad") tags.push("Sube calidad crediticia");
+  if (ratingDir === "Baja calidad") tags.push("Baja calidad crediticia");
+  if (sectorChange) tags.push("Diversifica/cambia sector");
+  if (lawChange) tags.push("Cambia ley aplicable");
+  return tags.length ? tags : ["Rotación neutral / requiere análisis cualitativo"];
+}
+function kpi(label, value, tooltip, cls = "") {
+  return `<div class="kpi has-tooltip" title="${escapeHtml(tooltip || "")}"><small>${label}</small><strong class="${cls}">${value}</strong></div>`;
+}
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+}
 function calcRotation() {
   const sell = rowBySymbol($("sellSymbol").value);
   const buy = rowBySymbol($("buySymbol").value);
@@ -162,43 +197,74 @@ function calcRotation() {
     box.className = "result-box muted-box";
     return;
   }
+
   const grossSale = nominal * sellPx / 100;
   const saleFeeAmt = grossSale * sellFee;
   const netSale = grossSale - saleFeeAmt;
   const grossBuyCapacity = netSale / (1 + buyFee);
-  const buyNominal = grossBuyCapacity / buyPx * 100;
   const buyFeeAmt = grossBuyCapacity * buyFee;
+  const buyNominal = grossBuyCapacity / buyPx * 100;
   const totalCosts = saleFeeAmt + buyFeeAmt;
-  const tirPickup = buy.tir !== null && sell.tir !== null ? buy.tir - sell.tir : null;
-  const durationChange = buy.durationMod !== null && sell.durationMod !== null ? buy.durationMod - sell.durationMod : null;
+  const totalCostsVsGross = grossSale ? totalCosts / grossSale : null;
+
+  const tirPickup = buy.tir !== null && buy.tir !== undefined && sell.tir !== null && sell.tir !== undefined ? buy.tir - sell.tir : null;
+  const durationChange = buy.durationMod !== null && buy.durationMod !== undefined && sell.durationMod !== null && sell.durationMod !== undefined ? buy.durationMod - sell.durationMod : null;
   const flow12Sell = (sell.flows12 || 0) * nominal / 100;
   const flow12Buy = (buy.flows12 || 0) * buyNominal / 100;
   const flow24Sell = (sell.flows24 || 0) * nominal / 100;
   const flow24Buy = (buy.flows24 || 0) * buyNominal / 100;
+  const flow12Delta = flow12Buy - flow12Sell;
+  const flow24Delta = flow24Buy - flow24Sell;
   const dv01Sell = (sell.durationMod && sell.dirtyPrice) ? sell.durationMod * (sell.dirtyPrice * nominal / 100) * 0.0001 : null;
   const dv01Buy = (buy.durationMod && buy.dirtyPrice) ? buy.durationMod * (buy.dirtyPrice * buyNominal / 100) * 0.0001 : null;
-  const costsAsPct = netSale ? totalCosts / netSale : null;
+  const dv01Delta = (dv01Sell !== null && dv01Buy !== null) ? dv01Buy - dv01Sell : null;
+  const carryPickup12 = grossSale ? flow12Delta / grossSale : null;
+  const breakevenMonths = flow12Delta > 0 ? (totalCosts / flow12Delta) * 12 : null;
+  const ratingDir = ratingDirection(sell, buy);
+  const sectorChange = (sell.sector || "") !== (buy.sector || "");
+  const lawChange = (sell.law || "") !== (buy.law || "");
+  const tags = strategyTags({tirPickup, durationChange, flow12Delta, ratingDir, sectorChange, lawChange});
+
   const verdict = (() => {
-    if (tirPickup !== null && tirPickup > 0 && (durationChange ?? 0) <= 0.75) return "Mejora TIR sin aumentar demasiado duration. Revisar rating, liquidez y spread antes de ejecutar.";
-    if (tirPickup !== null && tirPickup < 0) return "Resigna TIR. Solo tiene sentido si mejora calidad crediticia, liquidez, duration o concentración.";
-    return "Requiere validación de ficha técnica y liquidez para completar la lectura.";
+    const positives = [];
+    const alerts = [];
+    if (tirPickup !== null && tirPickup > 0) positives.push("mejora la TIR");
+    if (flow12Delta > 0) positives.push("aumenta el flujo de renta de los próximos 12 meses");
+    if (durationChange !== null && durationChange < 0) positives.push("reduce duration/DV01");
+    if (ratingDir === "Mejora calidad") positives.push("mejora calidad crediticia");
+    if (tirPickup !== null && tirPickup < 0) alerts.push("resigna TIR");
+    if (durationChange !== null && durationChange > 0.75) alerts.push("aumenta sensibilidad a tasa");
+    if (ratingDir === "Baja calidad") alerts.push("baja calidad crediticia");
+    if (flow12Delta < 0) alerts.push("reduce flujo de renta 12M");
+    if (!positives.length && !alerts.length) return "Rotación neutra o incompleta. Validar ficha técnica, liquidez y spreads antes de ejecutar.";
+    if (positives.length && !alerts.length) return `La rotación luce favorable porque ${positives.join(", ")}. Confirmar liquidez real y precio ejecutable.`;
+    if (!positives.length && alerts.length) return `La rotación luce defensiva o de baja conveniencia económica: ${alerts.join(", ")}. Solo tendría sentido por objetivo cualitativo específico.`;
+    return `Rotación mixta: ${positives.join(", ")}; pero ${alerts.join(", ")}. La decisión depende del objetivo de cartera.`;
   })();
+
   box.className = "result-box";
-  box.innerHTML = `<div class="result-grid">
-    <div class="kpi"><small>Venta neta</small><strong>USD ${fmtNum(netSale, 2)}</strong></div>
-    <div class="kpi"><small>VN nuevo estimado</small><strong>${fmtNum(buyNominal, 0)}</strong></div>
-    <div class="kpi"><small>Pickup TIR</small><strong class="${tirPickup >= 0 ? "positive" : "negative"}">${fmtPct(tirPickup)}</strong></div>
-    <div class="kpi"><small>Cambio duration</small><strong>${fmtNum(durationChange, 2)}</strong></div>
-    <div class="kpi"><small>Flujo 12M</small><strong>USD ${fmtNum(flow12Sell, 2)} → ${fmtNum(flow12Buy, 2)}</strong></div>
-    <div class="kpi"><small>Flujo 24M</small><strong>USD ${fmtNum(flow24Sell, 2)} → ${fmtNum(flow24Buy, 2)}</strong></div>
-    <div class="kpi"><small>DV01 posición</small><strong>${fmtNum(dv01Sell, 2)} → ${fmtNum(dv01Buy, 2)}</strong></div>
-    <div class="kpi"><small>Costo total</small><strong>USD ${fmtNum(totalCosts, 2)} (${fmtPct(costsAsPct)})</strong></div>
-    <div class="kpi"><small>Rating</small><strong>${sell.rating || "—"} → ${buy.rating || "—"}</strong></div>
-    <div class="kpi"><small>Paridad</small><strong>${fmtPct(sell.parity)} → ${fmtPct(buy.parity)}</strong></div>
-    <div class="kpi"><small>Sector</small><strong>${sell.sector || "—"} → ${buy.sector || "—"}</strong></div>
-    <div class="kpi"><small>Ley</small><strong>${sell.law || "—"} → ${buy.law || "—"}</strong></div>
-  </div><p style="margin-top:14px"><strong>Lectura:</strong> ${verdict}</p>
-  <p class="muted" style="margin-top:8px">Precios usados: venta ${fmtNum(sellPx, 2)} / compra ${fmtNum(buyPx, 2)}. Las métricas dependen de que la ficha técnica esté validada.</p>`;
+  box.innerHTML = `
+    <div class="strategy-tags">${tags.map(t => `<span>${t}</span>`).join("")}</div>
+    <div class="result-grid">
+      ${kpi("VN actual → VN resultante", `${fmtNum(nominal, 0)} → ${fmtNum(buyNominal, 0)}`, "Compara los nominales que vendés contra los nominales estimados que podrías comprar del bono destino después de aplicar precio y comisión.")}
+      ${kpi("Venta neta", `USD ${fmtNum(netSale, 2)}`, "Monto efectivo que queda disponible después de vender el bono actual y descontar la comisión de venta. Es la caja que se usa para comprar el bono destino.")}
+      ${kpi("Precio usado", `${fmtNum(sellPx, 2)} → ${fmtNum(buyPx, 2)}`, "Precio de venta del bono actual y precio de compra del bono destino. Por defecto usa bid para vender y ask para comprar; con modo manual usa los precios cargados.")}
+      ${kpi("Costo total", `USD ${fmtNum(totalCosts, 2)} (${fmtPct(totalCostsVsGross)})`, "Suma de comisiones estimadas de venta y compra. No incluye otros costos operativos ni posible deslizamiento adicional por liquidez.")}
+      ${kpi("Pickup TIR", fmtPct(tirPickup), "Diferencia entre la TIR estimada del bono destino y la TIR estimada del bono actual. Positivo implica mayor rendimiento a vencimiento.", tirPickup >= 0 ? "positive" : "negative")}
+      ${kpi("Cambio duration", fmtNum(durationChange, 2), "Cambio en duration modificada. Positivo implica más sensibilidad a movimientos de tasas; negativo implica menor sensibilidad.", durationChange <= 0 ? "positive" : "negative")}
+      ${kpi("Flujo renta 12M", `USD ${fmtNum(flow12Sell, 2)} → ${fmtNum(flow12Buy, 2)}`, "Compara cupones y amortizaciones esperadas durante los próximos 12 meses para el VN actual y el VN resultante.", flow12Delta >= 0 ? "positive" : "negative")}
+      ${kpi("Diferencia renta 12M", `USD ${fmtNum(flow12Delta, 2)} (${fmtPct(carryPickup12)})`, "Incremento o reducción del flujo estimado de los próximos 12 meses. El porcentaje se mide contra el monto bruto vendido.", flow12Delta >= 0 ? "positive" : "negative")}
+      ${kpi("Flujo renta 24M", `USD ${fmtNum(flow24Sell, 2)} → ${fmtNum(flow24Buy, 2)}`, "Compara cupones y amortizaciones esperadas durante los próximos 24 meses.", flow24Delta >= 0 ? "positive" : "negative")}
+      ${kpi("DV01 posición", `${fmtNum(dv01Sell, 2)} → ${fmtNum(dv01Buy, 2)}`, "Sensibilidad aproximada de la posición ante un movimiento de 1 punto básico en la tasa. Mayor DV01 implica más volatilidad de precio.")}
+      ${kpi("Cambio DV01", fmtNum(dv01Delta, 2), "Aumento o reducción de sensibilidad total de la posición ante cambios de tasa.", dv01Delta <= 0 ? "positive" : "negative")}
+      ${kpi("Breakeven costo", breakevenMonths ? `${fmtNum(breakevenMonths, 1)} meses` : "—", "Cantidad aproximada de meses de mejora de flujo 12M necesaria para recuperar el costo total de la rotación. Solo se calcula si el flujo 12M mejora.")}
+      ${kpi("Rating", `${sell.rating || "—"} → ${buy.rating || "—"}`, "Compara calidad crediticia. Puede ser rating de emisor o de instrumento según la ficha disponible.")}
+      ${kpi("Paridad", `${fmtPct(sell.parity)} → ${fmtPct(buy.parity)}`, "Precio limpio sobre valor técnico. Sirve para ver si comprás más caro o barato respecto del valor técnico estimado.")}
+      ${kpi("Sector", `${sell.sector || "—"} → ${buy.sector || "—"}`, "Muestra si la rotación cambia exposición sectorial o aumenta concentración.")}
+      ${kpi("Ley", `${sell.law || "—"} → ${buy.law || "—"}`, "Compara ley aplicable del bono. Puede afectar protección legal y recupero esperado.")}
+    </div>
+    <p style="margin-top:14px"><strong>Lectura:</strong> ${verdict}</p>
+    <p class="muted" style="margin-top:8px">Las métricas dependen de que la ficha técnica esté validada. Para una decisión real, revisar liquidez, spread bid/ask, monto operable y precio ejecutable.</p>`;
 }
 async function saveTechFromEditor() {
   const symbol = normalizeSymbol($("editSymbol").value);

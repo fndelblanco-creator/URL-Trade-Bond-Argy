@@ -1,20 +1,25 @@
-# Dashboard de rotación de bonos corporativos — Cloud v5.5.4
+# Dashboard de rotación de bonos corporativos — Cloud v5.6
 
-Versión cloud para Render. No requiere instalar Python localmente.
+Versión cloud para Render/Node.
 
-## Cambios v5.4
+## Cambios v5.6
 
-- Panel de mercado ampliado: precio en pesos, USD MEP y Cable.
-- Prioriza precio USD MEP directo cuando existe profundidad suficiente.
-- Si no hay USD MEP directo o no tiene profundidad suficiente, convierte especie ARS / MEP.
-- Mejora el agrupamiento de especies por ticker base: ARS / MEP / Cable.
-- Agrega columnas: cupón anual, meses de cupón, amortización, dólar, ley, lámina mínima, sector, valor técnico, valor residual y paridad.
-- Carga una base semilla más amplia con los tickers visibles en la tabla de referencia provista.
-- Calcula TIR, duration modificada, valor técnico, valor residual y paridad cuando hay ficha técnica.
-- Agrega más aliases automáticos para especies O / D / C.
-- Mantiene editor rápido de ficha técnica desde la web.
+- Simulador como bloque principal.
+- Resultado de rotación con comparación **VN actual → VN resultante**.
+- Aclaración de **Venta neta** dentro del tooltip del recuadro.
+- Tooltips en cada recuadro del resultado: al pasar el cursor se explica qué mide cada métrica.
+- Nuevas métricas en resultado:
+  - Precio usado.
+  - Costo total como % de venta bruta.
+  - Diferencia de renta 12M.
+  - Cambio de DV01.
+  - Breakeven de costo en meses.
+  - Tags de estrategia: mayor TIR, acorta duration, mejora renta, cambia rating, etc.
+- Lectura de conveniencia más completa: distingue mejora económica, reducción de riesgo, extensión de duration y cambios de calidad crediticia.
 
-## Deploy en Render
+## Deploy
+
+Subir a GitHub el contenido de esta carpeta y redeployar en Render.
 
 Build Command:
 
@@ -27,18 +32,3 @@ Start Command:
 ```bash
 npm start
 ```
-
-Root Directory: dejar vacío si `package.json` está en la raíz del repo.
-
-## Nota importante
-
-CNV/FIX automático sigue siendo best-effort. La extracción automática de prospectos y ratings no debe reemplazar la validación contra prospecto, aviso de resultados y último informe de calificación. Para una versión productiva, conviene migrar `data/bonds.json` a Supabase/PostgreSQL para persistencia real.
-
-
-## Cambios v5.5
-
-- El simulador de rotación queda como primer bloque visible de la página.
-- El formulario de rotación queda a la izquierda y el resultado del cambio a la derecha.
-- El panel de mercado queda debajo como consulta secundaria.
-- Se eliminan de la vista principal las secciones de ficha técnica JSON, variables de rotación, editor rápido y faltantes técnicos.
-- La base técnica sigue existiendo en `data/bonds.json`, pero ya no ocupa espacio visual en el dashboard principal.
