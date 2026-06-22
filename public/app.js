@@ -255,21 +255,28 @@ async function sync(mode) {
     setStatus("ok", `Sincronización ${mode.toUpperCase()} finalizada`, `${data.count || 1} bonos procesados`);
   } catch (e) { setStatus("error", `Error al sincronizar ${mode.toUpperCase()}`, e.message); }
 }
+function bindIfExists(id, event, handler) {
+  const el = $(id);
+  if (el) el.addEventListener(event, handler);
+}
 function bindEvents() {
-  $("refreshPrices").addEventListener("click", () => refreshPrices());
-  $("syncFix").addEventListener("click", () => sync("fix"));
-  $("syncBoth").addEventListener("click", () => sync("both"));
-  $("exportCsv").addEventListener("click", exportCsv);
-  $("tableSearch").addEventListener("input", renderTable);
-  $("priceMode").addEventListener("change", renderTable);
-  $("calcRotation").addEventListener("click", calcRotation);
-  $("manualPrices").addEventListener("change", (e) => { $("manualSellPrice").disabled = !e.target.checked; $("manualBuyPrice").disabled = !e.target.checked; });
-  $("saveTech").addEventListener("click", async () => {
+  bindIfExists("refreshPrices", "click", () => refreshPrices());
+  bindIfExists("syncFix", "click", () => sync("fix"));
+  bindIfExists("syncBoth", "click", () => sync("both"));
+  bindIfExists("exportCsv", "click", exportCsv);
+  bindIfExists("tableSearch", "input", renderTable);
+  bindIfExists("priceMode", "change", renderTable);
+  bindIfExists("calcRotation", "click", calcRotation);
+  bindIfExists("manualPrices", "change", (e) => {
+    if ($("manualSellPrice")) $("manualSellPrice").disabled = !e.target.checked;
+    if ($("manualBuyPrice")) $("manualBuyPrice").disabled = !e.target.checked;
+  });
+  bindIfExists("saveTech", "click", async () => {
     try { setStatus("muted", "Guardando ficha técnica...", "Editor manual"); const data = await saveTechFromEditor(); setStatus("ok", "Ficha técnica guardada", `${data.action === "created" ? "Creada" : "Actualizada"}: ${data.bond.symbol}`); }
     catch (e) { setStatus("error", "Error al guardar ficha", e.message); }
   });
-  $("exportJson").addEventListener("click", () => download("bonds.json", JSON.stringify(bonds, null, 2)));
-  $("importJson").addEventListener("change", async (ev) => {
+  bindIfExists("exportJson", "click", () => download("bonds.json", JSON.stringify(bonds, null, 2)));
+  bindIfExists("importJson", "change", async (ev) => {
     const file = ev.target.files[0]; if (!file) return;
     try { const imported = JSON.parse(await file.text()); if (!Array.isArray(imported)) throw new Error("El JSON debe ser un array de bonos"); await api("/api/bonds", { method: "POST", body: JSON.stringify({ bonds: imported }) }); await loadBonds(); await refreshPrices(true); setStatus("ok", "Base técnica importada", `${imported.length} bonos`); }
     catch (e) { setStatus("error", "Error al importar JSON", e.message); }

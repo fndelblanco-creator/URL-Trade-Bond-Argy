@@ -1,4 +1,4 @@
-# Dashboard de rotación de bonos corporativos — Cloud v5.4
+# Dashboard de rotación de bonos corporativos — Cloud v5.5.4
 
 Versión cloud para Render. No requiere instalar Python localmente.
 
@@ -33,3 +33,12 @@ Root Directory: dejar vacío si `package.json` está en la raíz del repo.
 ## Nota importante
 
 CNV/FIX automático sigue siendo best-effort. La extracción automática de prospectos y ratings no debe reemplazar la validación contra prospecto, aviso de resultados y último informe de calificación. Para una versión productiva, conviene migrar `data/bonds.json` a Supabase/PostgreSQL para persistencia real.
+
+
+## Cambios v5.5
+
+- El simulador de rotación queda como primer bloque visible de la página.
+- El formulario de rotación queda a la izquierda y el resultado del cambio a la derecha.
+- El panel de mercado queda debajo como consulta secundaria.
+- Se eliminan de la vista principal las secciones de ficha técnica JSON, variables de rotación, editor rápido y faltantes técnicos.
+- La base técnica sigue existiendo en `data/bonds.json`, pero ya no ocupa espacio visual en el dashboard principal.

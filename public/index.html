@@ -8,11 +8,11 @@
 </head>
 <body>
   <main class="shell">
-    <header class="hero">
+    <header class="hero compact-hero">
       <div>
         <div class="eyebrow">Renta fija corporativa</div>
         <h1>Dashboard de rotación de bonos</h1>
-        <p>Precios ARS / USD MEP / Cable + ficha técnica + simulador de rotación.</p>
+        <p>Simulador de rotación + precios ARS / USD MEP / Cable + métricas de renta fija.</p>
       </div>
       <div id="statusCard" class="status-card muted">
         <span class="dot"></span>
@@ -23,7 +23,7 @@
       </div>
     </header>
 
-    <section class="control-panel">
+    <section class="control-panel slim-controls">
       <div class="metric">
         <small>⏱️ Precios</small>
         <strong>Cada 30 segundos</strong>
@@ -32,12 +32,8 @@
         <small>💵 MEP usado</small>
         <strong id="mepValue">—</strong>
       </div>
-      <div class="metric">
-        <small>📄 Fuente técnica</small>
-        <strong>CNV / FIX</strong>
-      </div>
       <label class="metric compact">
-        <small>Precio para tabla</small>
+        <small>Precio para cálculo / tabla</small>
         <select id="priceMode">
           <option value="mid">Mid bid/ask</option>
           <option value="last">Último</option>
@@ -45,70 +41,26 @@
           <option value="ask">Ask</option>
         </select>
       </label>
-      <div class="actions">
+      <div class="actions inline-actions">
         <button id="refreshPrices" class="primary">Actualizar precios</button>
-        <button id="syncFix">Solo ratings FIX</button>
-        <button id="syncBoth">Actualizar CNV/FIX</button>
         <button id="exportCsv">Exportar CSV</button>
       </div>
     </section>
 
-    <section class="grid two">
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2>Panel de mercado</h2>
-            <p>Precios por especie: pesos, USD MEP y Cable. Prioriza USD MEP directo; si no hay profundidad, convierte ARS / MEP.</p>
-          </div>
-          <input id="tableSearch" type="search" placeholder="Buscar ticker / emisor" />
-        </div>
-        <div class="table-wrap">
-          <table id="marketTable">
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Emisor</th>
-                <th>Precio $</th>
-                <th>Precio USD MEP</th>
-                <th>Bid MEP</th>
-                <th>Ask MEP</th>
-                <th>Precio Cable</th>
-                <th>TIR</th>
-                <th>Duration mod.</th>
-                <th>Venc.</th>
-                <th>Amortización</th>
-                <th>Cupón</th>
-                <th>Mes cupón</th>
-                <th>Dólar</th>
-                <th>Ley</th>
-                <th>Rating</th>
-                <th>Lámina mín.</th>
-                <th>Sector</th>
-                <th>Valor técnico</th>
-                <th>Valor residual</th>
-                <th>Paridad</th>
-                <th>Spread MEP</th>
-                <th>Fuente precio</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </article>
-
-      <article class="card">
+    <section class="rotation-workspace">
+      <article class="card rotation-input-card">
         <div class="card-head">
           <div>
             <h2>Simulador de rotación</h2>
-            <p>Usa bid para vender y ask para comprar. Permite precios manuales.</p>
+            <p>Compara un bono actual contra un bono destino usando bid para vender y ask para comprar. También permite simular precios manuales.</p>
           </div>
         </div>
-        <div class="form-grid">
+        <div class="form-grid rotation-form">
           <label>Bono actual
-            <input id="sellSymbol" list="symbolsList" placeholder="Ej: CP38O" />
+            <input id="sellSymbol" list="symbolsList" placeholder="Ej: RUCDO" />
           </label>
           <label>Bono destino
-            <input id="buySymbol" list="symbolsList" placeholder="Ej: RUCDO" />
+            <input id="buySymbol" list="symbolsList" placeholder="Ej: TLCPO" />
           </label>
           <label>Nominales a vender
             <input id="sellNominal" type="number" value="10000" min="0" step="1" />
@@ -119,9 +71,9 @@
           <label>Comisión compra (%)
             <input id="buyFee" type="number" value="0.25" min="0" step="0.01" />
           </label>
-          <label class="checkline">
+          <label class="checkline full-row">
             <input id="manualPrices" type="checkbox" />
-            Usar precios manuales
+            Usar precios manuales para probar escenarios
           </label>
           <label>Precio venta manual
             <input id="manualSellPrice" type="number" placeholder="Bid manual" step="0.01" disabled />
@@ -131,117 +83,61 @@
           </label>
         </div>
         <button id="calcRotation" class="primary wide">Calcular rotación</button>
-        <div id="rotationResult" class="result-box muted-box">Elegí dos bonos y calculá la rotación.</div>
+      </article>
+
+      <article class="card rotation-output-card">
+        <div class="card-head">
+          <div>
+            <h2>Resultado del cambio</h2>
+            <p>Lectura de conveniencia, TIR, duration, flujos, costo total, rating, ley y paridad.</p>
+          </div>
+        </div>
+        <div id="rotationResult" class="result-box muted-box result-placeholder">
+          Elegí dos bonos, cargá nominales y calculá la rotación.
+        </div>
       </article>
     </section>
 
-
-
-    <section class="grid two lower">
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2>Bonos con ficha incompleta</h2>
-            <p>Tickers con precio pero sin datos suficientes para calcular TIR, duration, rating, valor técnico o paridad.</p>
-          </div>
+    <section class="card market-card">
+      <div class="card-head sticky-card-head">
+        <div>
+          <h2>Panel de mercado</h2>
+          <p>Vista consolidada por especie: pesos, USD MEP y Cable. El precio principal prioriza USD MEP directo; si no hay suficiente profundidad, convierte ARS / MEP.</p>
         </div>
-        <div class="table-wrap small-table">
-          <table id="missingTable">
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Precio USD</th>
-                <th>Problema</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </article>
-
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2>Editor rápido de ficha técnica</h2>
-            <p>Permite completar datos manuales sin tocar archivos. Se guarda en <code>data/bonds.json</code>.</p>
-          </div>
-        </div>
-        <div class="form-grid compact-form">
-          <label>Ticker / especie principal
-            <input id="editSymbol" placeholder="Ej: TLCPO" />
-          </label>
-          <label>Aliases separados por coma
-            <input id="editAliases" placeholder="Ej: TLCPO, TLCPD, TLCP" />
-          </label>
-          <label>Emisor
-            <input id="editIssuer" placeholder="Ej: Telecom Argentina S.A." />
-          </label>
-          <label>Sector
-            <input id="editSector" placeholder="Ej: Telecomunicaciones" />
-          </label>
-          <label>Cupón anual decimal
-            <input id="editCoupon" type="number" step="0.0001" placeholder="Ej: 0.0925" />
-          </label>
-          <label>Vencimiento
-            <input id="editMaturity" type="date" />
-          </label>
-          <label>Frecuencia anual
-            <input id="editFrequency" type="number" step="1" placeholder="2 semestral / 4 trimestral" />
-          </label>
-          <label>Rating
-            <input id="editRating" placeholder="Ej: AA+(arg)" />
-          </label>
-          <label>Agencia
-            <input id="editRatingAgency" placeholder="Ej: FIX" />
-          </label>
-          <label>Ley
-            <input id="editLaw" placeholder="NY / Argentina" />
-          </label>
-          <label>Mes cupón
-            <input id="editCouponMonths" placeholder="Ej: may y nov" />
-          </label>
-          <label>Lámina mínima
-            <input id="editMinLot" type="number" step="1" placeholder="Ej: 1000" />
-          </label>
-        </div>
-        <p class="muted editor-note">Amortización: si no se carga una estructura específica, se asume bullet al vencimiento. Para amortizaciones parciales, editar el JSON completo.</p>
-        <button id="saveTech" class="primary wide">Guardar ficha técnica</button>
-      </article>
-    </section>
-
-    <section class="grid two lower">
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2>Ficha técnica</h2>
-            <p>Base técnica editable: cupón, vencimiento, amortización, rating, ley y garantía.</p>
-          </div>
-        </div>
-        <div class="actions wrap">
-          <button id="exportJson">Exportar base técnica</button>
-          <label class="file-button">Importar JSON
-            <input id="importJson" type="file" accept="application/json" hidden />
-          </label>
-        </div>
-        <pre id="techPreview" class="json-preview">Cargando...</pre>
-      </article>
-
-      <article class="card">
-        <h2>Variables para evaluar rotaciones</h2>
-        <div class="checklist">
-          <div>✅ Pickup de TIR</div>
-          <div>✅ Cambio de duration / DV01</div>
-          <div>✅ Flujo de renta 12M y 24M</div>
-          <div>✅ Cambio de rating / outlook</div>
-          <div>✅ Ley aplicable y garantía</div>
-          <div>✅ Spread bid/ask y volumen</div>
-          <div>✅ Concentración por emisor/sector</div>
-          <div>✅ Costo total: comisiones + spread</div>
-          <div>✅ Call risk / amortización</div>
-          <div>✅ Upside/downside por +/- 100 bps</div>
-        </div>
-      </article>
+        <input id="tableSearch" type="search" placeholder="Buscar ticker / emisor" />
+      </div>
+      <div class="table-wrap market-table-wrap">
+        <table id="marketTable">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Emisor</th>
+              <th>Precio $</th>
+              <th>Precio USD MEP</th>
+              <th>Bid MEP</th>
+              <th>Ask MEP</th>
+              <th>Precio Cable</th>
+              <th>TIR</th>
+              <th>Duration mod.</th>
+              <th>Venc.</th>
+              <th>Amortización</th>
+              <th>Cupón</th>
+              <th>Mes cupón</th>
+              <th>Dólar</th>
+              <th>Ley</th>
+              <th>Rating</th>
+              <th>Lámina mín.</th>
+              <th>Sector</th>
+              <th>Valor técnico</th>
+              <th>Valor residual</th>
+              <th>Paridad</th>
+              <th>Spread MEP</th>
+              <th>Fuente precio</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </section>
   </main>
 
