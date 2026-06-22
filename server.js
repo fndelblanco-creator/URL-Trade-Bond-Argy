@@ -78,12 +78,64 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
 async function fetchJson(url) { const res = await fetchWithTimeout(url); return res.json(); }
 async function fetchText(url) { const res = await fetchWithTimeout(url); return res.text(); }
 
+const ACCEPTED_METRIC_SOURCES = new Set(["FIX", "CNV_EEFF", "FIX_CNV", "MANUAL_VERIFIED"]);
+function metricNumber(value) {
+  const n = cleanNumber(value);
+  return n === null || Number.isNaN(n) ? null : n;
+}
+function isVerifiedMetricSource(metric) {
+  return ACCEPTED_METRIC_SOURCES.has(String(metric?.sourceType || "").toUpperCase());
+}
+function scoreLowerBetter(value, excellent, weak) {
+  const n = metricNumber(value);
+  if (n === null) return null;
+  if (n <= excellent) return 10;
+  if (n >= weak) return 0;
+  return Math.max(0, Math.min(10, 10 * (weak - n) / (weak - excellent)));
+}
+function scoreHigherBetter(value, weak, excellent) {
+  const n = metricNumber(value);
+  if (n === null) return null;
+  if (n >= excellent) return 10;
+  if (n <= weak) return 0;
+  return Math.max(0, Math.min(10, 10 * (n - weak) / (excellent - weak)));
+}
+function weightedAverage(parts) {
+  const valid = parts.filter(p => p.score !== null && p.score !== undefined && Number.isFinite(Number(p.score)));
+  if (!valid.length) return null;
+  const totalW = valid.reduce((a,p) => a + p.weight, 0);
+  return valid.reduce((a,p) => a + Number(p.score) * p.weight, 0) / totalW;
+}
+function computeFundamentalScore(metric) {
+  // Metodología inicial 0-10. Solo se calcula con fuentes verificadas FIX/CNV/manual validada.
+  // Apalancamiento: menor ND/EBITDA es mejor. Liquidez y cobertura: mayor es mejor.
+  return weightedAverage([
+    { score: scoreLowerBetter(metric.netDebtEbitda, 0.5, 6.0), weight: 0.50 },
+    { score: scoreHigherBetter(metric.cashStDebt, 0.25, 3.0), weight: 0.25 },
+    { score: scoreHigherBetter(metric.ebitdaInterest, 1.0, 8.0), weight: 0.25 },
+  ]);
+}
+function normalizeIssuerMetric(metric) {
+  if (!isVerifiedMetricSource(metric)) return null;
+  const out = { ...metric };
+  out.netDebtEbitda = metricNumber(out.netDebtEbitda);
+  out.cashStDebt = metricNumber(out.cashStDebt);
+  out.ebitdaInterest = metricNumber(out.ebitdaInterest);
+  out.scoreFundamentals = metricNumber(out.scoreFundamentals);
+  if (out.scoreFundamentals === null) out.scoreFundamentals = computeFundamentalScore(out);
+  out.scoreTotal = metricNumber(out.scoreTotal);
+  if (out.scoreTotal === null) out.scoreTotal = out.scoreFundamentals;
+  out.metricsStatus = "validado";
+  out.source = out.source || out.sourceName || out.sourceType;
+  return out;
+}
 async function loadIssuerMetrics() {
   if (cache.issuerMetrics.data && Date.now() - cache.issuerMetrics.ts < 30_000) return cache.issuerMetrics.data;
   try {
     const raw = await fs.readFile(ISSUER_METRICS_PATH, "utf8");
     const data = JSON.parse(raw);
-    cache.issuerMetrics = { ts: Date.now(), data: Array.isArray(data) ? data : [] };
+    const metrics = (Array.isArray(data) ? data : []).map(normalizeIssuerMetric).filter(Boolean);
+    cache.issuerMetrics = { ts: Date.now(), data: metrics };
     return cache.issuerMetrics.data;
   } catch {
     cache.issuerMetrics = { ts: Date.now(), data: [] };
@@ -159,6 +211,7 @@ function findBondTech(bonds, symbol, base = null) {
   return idx >= 0 ? bonds[idx] : null;
 }
 function technicalProblems(tech) {
+  // Problemas que impiden o degradan cálculos de TIR/duration/paridad.
   if (!tech) return ["Falta ficha técnica"];
   const p = [];
   if (!tech.issuer && !tech.shortIssuer) p.push("Falta emisor");
@@ -166,8 +219,45 @@ function technicalProblems(tech) {
   if (!tech.maturity) p.push("Falta vencimiento");
   if (!tech.frequency) p.push("Falta frecuencia");
   if (!Array.isArray(tech.amortization) || !tech.amortization.length) p.push("Falta amortización");
-  if (!tech.rating) p.push("Falta rating");
   return p;
+}
+const ACCEPTED_TECH_SOURCES = new Set(["CNV", "PROSPECTO_CNV", "AVISO_RESULTADO_CNV", "FIX", "MANUAL_VERIFIED", "USER_VERIFIED"]);
+function sourceStatusOf(tech, field) {
+  const src = tech?.fieldSources?.[field] || {};
+  return String(src.status || tech?.[`${field}ValidationStatus`] || "").toLowerCase();
+}
+function sourceNameOf(tech, field) {
+  const src = tech?.fieldSources?.[field] || {};
+  return src.source || tech?.[`${field}Source`] || tech?.sourceStatus || "—";
+}
+function isFieldVerified(tech, field) {
+  const src = tech?.fieldSources?.[field] || {};
+  const status = String(src.status || tech?.[`${field}ValidationStatus`] || "").toLowerCase();
+  const type = String(src.sourceType || tech?.[`${field}SourceType`] || "").toUpperCase();
+  return status.includes("valid") || status.includes("verific") || ACCEPTED_TECH_SOURCES.has(type);
+}
+function ratingStatus(tech) {
+  if (!tech) return { status: "Sin ficha", label: "Pendiente", source: "Sin ficha técnica" };
+  if (tech.rating && isFieldVerified(tech, "rating")) return { status: "validado", label: tech.rating, source: sourceNameOf(tech, "rating") };
+  return { status: "pendiente", label: "Pendiente", source: "Pendiente FIX/CNV" };
+}
+function validationWarnings(tech) {
+  if (!tech) return ["Sin ficha técnica"];
+  const w = [];
+  if (!isFieldVerified(tech, "coupon")) w.push("Cupón pendiente CNV");
+  if (!isFieldVerified(tech, "maturity")) w.push("Vencimiento pendiente CNV");
+  if (!isFieldVerified(tech, "amortization")) w.push("Amortización pendiente CNV");
+  if (!isFieldVerified(tech, "law")) w.push("Ley pendiente CNV");
+  if (!isFieldVerified(tech, "rating")) w.push("Rating pendiente FIX/CNV");
+  if (tech.amortizationApprox) w.push("Amortización aproximada");
+  return w;
+}
+function validationBadge(tech, problems) {
+  if (!tech) return "Sin ficha";
+  if (problems?.length) return "Ficha incompleta";
+  const warnings = validationWarnings(tech);
+  if (warnings.length) return "Pendiente CNV/FIX";
+  return "Validado";
 }
 
 function normalizeMarketRow(row) {
@@ -387,9 +477,12 @@ async function getPrices() {
     const metrics = tech ? calcMetrics(tech, price, today) : calcMetrics(null, null, today);
     const credit = findIssuerMetrics(issuerMetrics, tech);
     const problems = technicalProblems(tech);
+    const warnings = validationWarnings(tech);
+    const rStatus = ratingStatus(tech);
+    const validation = validationBadge(tech, problems);
     out.push({
       symbol: displaySymbol, base, canonicalSymbol: tech?.symbol || null, aliases: tech ? symbolAliasesOf(tech) : [],
-      hasTechnical: !!tech, technicalProblems: problems,
+      hasTechnical: !!tech, technicalProblems: problems, validationWarnings: warnings, validationBadge: validation,
       issuer: tech?.shortIssuer || tech?.issuer || "—", sector: tech?.sector || "—",
       priceArs: prices.priceArs, bidArs: prices.bidArs, askArs: prices.askArs, symbolArs: prices.symbolArs,
       priceUsdMep: prices.priceUsdMep, bidUsdMep: prices.bidUsdMep, askUsdMep: prices.askUsdMep, lastUsdMep: prices.lastUsdMep,
@@ -399,12 +492,14 @@ async function getPrices() {
       spread: spreadPct(prices.bidUsdMep, prices.askUsdMep), priceSource: prices.source, mepUsed: prices.source?.includes("ARS") ? mep : null,
       maturity: tech?.maturity || null, coupon: tech?.coupon ?? null, couponMonths: tech?.couponMonths || null, frequency: tech?.frequency ?? null,
       amortizationType: tech?.amortizationType || (tech?.amortization?.length === 1 ? "Bullet" : "Amortizable"), amortizationApprox: !!tech?.amortizationApprox,
-      dollar: tech?.dollar || null, law: tech?.law || null, rating: tech?.rating || null, ratingAgency: tech?.ratingAgency || null, minLot: tech?.minLot ?? null,
+      dollar: tech?.dollar || null, law: tech?.law || null, lawValidationStatus: sourceStatusOf(tech, "law") || null, lawSource: sourceNameOf(tech, "law"),
+      rating: rStatus.status === "validado" ? tech?.rating : null, ratingDisplay: rStatus.label, ratingAgency: rStatus.status === "validado" ? tech?.ratingAgency : null, ratingValidationStatus: rStatus.status, ratingSource: rStatus.source, legacySeedRating: tech?.legacySeedRating || null, minLot: tech?.minLot ?? null,
       creditKey: credit?.key || null, creditView: credit?.view || null, creditViewScore: credit?.viewScore ?? null,
       scoreFundamentals: credit?.scoreFundamentals ?? null, scoreQualitative: credit?.scoreQualitative ?? null, scoreTotal: credit?.scoreTotal ?? null, scoreChangeYoY: credit?.scoreChangeYoY ?? null, creditQuality: creditQualityLabel(credit?.scoreTotal),
       netDebtEbitda: credit?.netDebtEbitda ?? null, netDebtEbitdaChangeYoY: credit?.netDebtEbitdaChangeYoY ?? null, cashStDebt: credit?.cashStDebt ?? null, cashStDebtChangeYoY: credit?.cashStDebtChangeYoY ?? null, ebitdaInterest: credit?.ebitdaInterest ?? null, ebitdaInterestChangeYoY: credit?.ebitdaInterestChangeYoY ?? null,
-      creditMetricsAsOf: credit?.asOf || null, creditMetricsSource: credit?.source || null, tirPerScore: metrics.tir && credit?.scoreTotal ? metrics.tir / credit.scoreTotal : null,
-      sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"), validationStatus: problems.length ? problems.join("; ") : "OK",
+      creditMetricsAsOf: credit?.asOf || null, creditMetricsSource: credit?.source || null, creditMetricsSourceType: credit?.sourceType || null, creditMetricsStatus: credit ? "validado" : "pendiente FIX/CNV", tirPerScore: metrics.tir && credit?.scoreTotal ? metrics.tir / credit.scoreTotal : null,
+      sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"), dataQuality: tech?.dataQuality || null, technicalValidationStatus: tech?.technicalValidationStatus || null, technicalSource: tech?.technicalSource || tech?.sourceStatus || null,
+      validationStatus: problems.length ? problems.join("; ") : (warnings.length ? warnings.join("; ") : "OK"),
       tir: metrics.tir, durationMod: metrics.durationMod, accrued: metrics.accrued, dirtyPrice: metrics.dirtyPrice,
       technicalValue: metrics.technicalValue, residualValue: metrics.residualValue, parity: metrics.parity,
       flows12: metrics.flows12, flows24: metrics.flows24, cashflows: metrics.cashflows?.slice(0, 12) || [],
@@ -434,7 +529,7 @@ async function syncFixForBond(bond) {
     const text = $.text();
     const rating = extractRatingFromFixText(text);
     if (!rating) return { ok: false, message: "No se detectó rating FIX", url };
-    return { ok: true, patch: { rating, ratingAgency: "FIX", ratingUpdatedAt: nowIso(), ratingSource: url }, url };
+    return { ok: true, patch: { rating, ratingAgency: "FIX", ratingUpdatedAt: nowIso(), ratingSource: url, ratingValidationStatus: "validado", fieldSources: { ...(bond.fieldSources || {}), rating: { status: "validado", sourceType: "FIX", source: url, note: "Rating extraído automáticamente desde FIX; revisar instrumento vs. emisor antes de usar productivamente." } } }, url };
   } catch (e) { return { ok: false, message: e.message, url }; }
 }
 async function syncOne(symbol, mode = "fix") {
@@ -455,7 +550,7 @@ async function syncOne(symbol, mode = "fix") {
   return { ok: true, symbol: bond.symbol, patch, reports };
 }
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5.7" }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5.9" }));
 app.get("/api/bonds", async (_req, res) => { try { res.json({ ok: true, bonds: await loadBonds() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.get("/api/issuer-metrics", async (_req, res) => { try { res.json({ ok: true, metrics: await loadIssuerMetrics() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.post("/api/bonds", async (req, res) => { try { if (!Array.isArray(req.body?.bonds)) return res.status(400).json({ ok: false, error: "Enviar { bonds: [...] }" }); await saveBonds(req.body.bonds); cache.prices = { ts: 0, data: null }; res.json({ ok: true, count: req.body.bonds.length }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });

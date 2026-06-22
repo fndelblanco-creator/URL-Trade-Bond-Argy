@@ -26,19 +26,79 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "CCC+",
-    "ratingAgency": "S&P",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "CP38O",
       "CP38",
       "CP38D",
       "CP38C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "CCC+",
+    "legacySeedRatingAgency": "S&P",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "RUCDO",
@@ -65,20 +125,80 @@
     "amortizationApprox": false,
     "couponMonths": "feb y ago",
     "dollar": "MEP",
-    "law": "ARG",
-    "rating": "B(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "law": "NY",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-user-corrected-v5.8-pending-cnv-fix",
+    "notes": "Ley corregida a NY por revisión manual del usuario. Validar el resto de condiciones contra prospecto/aviso de resultados/CNV. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "RUCDO",
       "RUCD",
       "RUCDD",
       "RUCDC"
-    ]
+    ],
+    "dataQuality": "partial-user-corrected-pending-formal-validation",
+    "legacySeedRating": "B(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Parcial: ley corregida por usuario; resto pendiente CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "corregida_usuario_pendiente_cnv",
+        "source": "Corrección manual usuario v5.8",
+        "note": "Ley corregida a NY. Validar contra suplemento/aviso de resultados CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "RUCEO",
@@ -106,19 +226,79 @@
     "couponMonths": "jun y dic",
     "dollar": "MEP",
     "law": "ARG",
-    "rating": "B(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "RUCEO",
       "RUCE",
       "RUCED",
       "RUCEC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "B(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "TLCMO",
@@ -146,19 +326,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AA+(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "TLCMO",
       "TLCM",
       "TLCMD",
       "TLCMC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AA+(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "CS45O",
@@ -187,19 +427,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "CS45O",
       "CS45",
       "CS45D",
       "CS45C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "PNDCO",
@@ -236,19 +536,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "PNDCO",
       "PNDC",
       "PNDCD",
       "PNDCC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "LMS8O",
@@ -285,19 +645,79 @@
     "couponMonths": "mar, jun, sep y dic",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 50,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "LMS8O",
       "LMS8",
       "LMS8D",
       "LMS8C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "VSCOO",
@@ -326,19 +746,79 @@
     "couponMonths": "mar y sep",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 100,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "VSCOO",
       "VSCO",
       "VSCOD",
       "VSCOC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "IRCFO",
@@ -375,19 +855,79 @@
     "couponMonths": "jun y dic",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "IRCFO",
       "IRCF",
       "IRCFD",
       "IRCFC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "LMS7O",
@@ -424,19 +964,79 @@
     "couponMonths": "oct, ene, abr y jul",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 50,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "LMS7O",
       "LMS7",
       "LMS7D",
       "LMS7C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YMCIO",
@@ -473,19 +1073,79 @@
     "couponMonths": "jun y dic",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YMCIO",
       "YMCI",
       "YMCID",
       "YMCIC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "MGCOO",
@@ -514,19 +1174,79 @@
     "couponMonths": "feb y ago",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "MGCOO",
       "MGCO",
       "MGCOD",
       "MGCOC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "BYCHO",
@@ -555,19 +1275,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "BYCHO",
       "BYCH",
       "BYCHD",
       "BYCHC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YMCOO",
@@ -596,19 +1376,79 @@
     "couponMonths": "ene, abr, jul y oct",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YMCOO",
       "YMCO",
       "YMCOD",
       "YMCOC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YMCZO",
@@ -637,19 +1477,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YMCZO",
       "YMCZ",
       "YMCZD",
       "YMCZC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "BACGO",
@@ -678,19 +1578,79 @@
     "couponMonths": "jun y dic",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "BACGO",
       "BACG",
       "BACGD",
       "BACGC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "VSCUO",
@@ -719,19 +1679,79 @@
     "couponMonths": "mar y sep",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "VSCUO",
       "VSCU",
       "VSCUD",
       "VSCUC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YM39O",
@@ -760,19 +1780,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YM39O",
       "YM39",
       "YM39D",
       "YM39C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "TLCDO",
@@ -801,19 +1881,79 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "TLCDO",
       "TLCD",
       "TLCDD",
       "TLCDC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "VSCRO",
@@ -850,19 +1990,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "ARG",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "VSCRO",
       "VSCR",
       "VSCRD",
       "VSCRC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "BACHO",
@@ -891,19 +2091,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "BACHO",
       "BACH",
       "BACHD",
       "BACHC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YMCXO",
@@ -940,19 +2200,79 @@
     "couponMonths": "mar y sep",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YMCXO",
       "YMCX",
       "YMCXD",
       "YMCXC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "PNXCO",
@@ -989,19 +2309,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "PNXCO",
       "PNXC",
       "PNXCD",
       "PNXCC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "PLC5O",
@@ -1030,19 +2410,79 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "PLC5O",
       "PLC5",
       "PLC5D",
       "PLC5C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "TSC3O",
@@ -1071,19 +2511,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "TSC3O",
       "TSC3",
       "TSC3D",
       "TSC3C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "MGCMO",
@@ -1112,19 +2612,79 @@
     "couponMonths": "mar y sep",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 10000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "MGCMO",
       "MGCM",
       "MGCMD",
       "MGCMC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YFCJO",
@@ -1161,19 +2721,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YFCJO",
       "YFCJ",
       "YFCJD",
       "YFCJC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "TLCAO",
@@ -1210,19 +2830,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "TLCAO",
       "TLCA",
       "TLCAD",
       "TLCAC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "PLC4O",
@@ -1251,19 +2931,79 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "PLC4O",
       "PLC4",
       "PLC4D",
       "PLC4C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "VSCVO",
@@ -1300,19 +3040,79 @@
     "couponMonths": "jun y dic",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "VSCVO",
       "VSCV",
       "VSCVD",
       "VSCVC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YMCJO",
@@ -1349,19 +3149,79 @@
     "couponMonths": "mar y sep",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YMCJO",
       "YMCJ",
       "YMCJD",
       "YMCJC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "RC1CO",
@@ -1390,19 +3250,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "RC1CO",
       "RC1C",
       "RC1CD",
       "RC1CC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "YM34O",
@@ -1439,19 +3359,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "YM34O",
       "YM34",
       "YM34D",
       "YM34C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "IRCPO",
@@ -1488,19 +3468,79 @@
     "couponMonths": "may y sep",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "IRCPO",
       "IRCP",
       "IRCPD",
       "IRCPC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "VSCTO",
@@ -1537,19 +3577,79 @@
     "couponMonths": "jun y dic",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "VSCTO",
       "VSCT",
       "VSCTD",
       "VSCTC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "TSC4O",
@@ -1578,19 +3678,79 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "TSC4O",
       "TSC4",
       "TSC4D",
       "TSC4C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "PN43O",
@@ -1627,19 +3787,79 @@
     "couponMonths": "ene y jul",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "PN43O",
       "PN43",
       "PN43D",
       "PN43C"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "VSCXO",
@@ -1676,19 +3896,79 @@
     "couponMonths": "abr y oct",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "VSCXO",
       "VSCX",
       "VSCXD",
       "VSCXC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "MGCRO",
@@ -1717,19 +3997,79 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AAA(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 10000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "MGCRO",
       "MGCR",
       "MGCRD",
       "MGCRC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AAA(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   },
   {
     "symbol": "TLCPO",
@@ -1767,18 +4107,78 @@
     "couponMonths": "may y nov",
     "dollar": "Cable",
     "law": "NY",
-    "rating": "AA+(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "",
+    "rating": null,
+    "ratingAgency": null,
+    "ratingOutlook": null,
     "minLot": 1000,
     "secured": "",
-    "sourceStatus": "manual-seed-v5.4",
-    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "sourceStatus": "manual-seed-pending-cnv-fix-v5.9",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating. v5.9: rating no verificado removido de la visualización; ficha técnica pendiente de auditoría formal CNV/FIX.",
     "aliases": [
       "TLCPO",
       "TLCP",
       "TLCPD",
       "TLCPC"
-    ]
+    ],
+    "dataQuality": "seed-pending-formal-validation",
+    "legacySeedRating": "AA+(arg)",
+    "legacySeedRatingAgency": "FIX",
+    "ratingValidationStatus": "Pendiente FIX/CNV",
+    "ratingSource": null,
+    "technicalValidationStatus": "Pendiente validación CNV/FIX",
+    "fieldSources": {
+      "law": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso CNV."
+      },
+      "coupon": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "maturity": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "frequency": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "amortization": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "couponMonths": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "minLot": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "dollar": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "secured": {
+        "status": "pendiente_cnv",
+        "source": "Carga semilla/manual",
+        "note": "Validar contra prospecto/suplemento/aviso de resultados CNV."
+      },
+      "rating": {
+        "status": "pendiente_fix_cnv",
+        "source": "Pendiente",
+        "note": "No se muestra rating hasta validar contra FIX/Moody’s Local/S&P/CNV."
+      }
+    },
+    "isSeedData": true,
+    "formalValidationRequired": true
   }
 ]

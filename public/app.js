@@ -55,15 +55,17 @@ function renderTable() {
   const tbody = document.querySelector("#marketTable tbody");
   const q = $("tableSearch").value.trim().toLowerCase();
   const rows = (marketData?.rows || []).filter((r) => {
-    const text = `${r.symbol} ${r.issuer} ${r.sector} ${r.rating} ${r.law}`.toLowerCase();
+    const text = `${r.symbol} ${r.issuer} ${r.sector} ${r.ratingDisplay || r.rating} ${r.law} ${r.validationBadge}`.toLowerCase();
     return !q || text.includes(q);
   });
   tbody.innerHTML = rows.map((r) => {
     const price = getTablePrice(r);
-    const badgeClass = r.technicalProblems?.length ? "warn" : "ok";
-    const rating = r.rating ? `${r.rating}${r.ratingAgency ? ` ${r.ratingAgency}` : ""}` : "—";
+    const badgeClass = r.technicalProblems?.length ? "warn" : (r.validationWarnings?.length ? "pending" : "ok");
+    const rating = r.ratingValidationStatus === "validado" && r.rating ? `${r.rating}${r.ratingAgency ? ` ${r.ratingAgency}` : ""}` : "Pendiente";
+    const ratingTitle = r.ratingValidationStatus === "validado" ? `Fuente rating: ${r.ratingSource || "—"}` : `Pendiente FIX/CNV${r.legacySeedRating ? `. Rating semilla removido: ${r.legacySeedRating}` : ""}`;
     const amort = `${r.amortizationType || "—"}${r.amortizationApprox ? "*" : ""}`;
-    return `<tr title="${r.validationStatus || ""}">
+    const valTitle = `${r.validationStatus || ""}${r.sourceStatus ? ` | Fuente: ${r.sourceStatus}` : ""}`;
+    return `<tr title="${escapeHtml(valTitle)}">
       <td><span class="badge ${badgeClass}">${r.symbol}</span></td>
       <td>${r.issuer || "—"}</td>
       <td>${r.priceArs ? `$ ${fmtNum(r.priceArs, 2)}` : "—"}</td>
@@ -79,9 +81,10 @@ function renderTable() {
       <td>${r.couponMonths || "—"}</td>
       <td>${r.dollar || "—"}</td>
       <td>${r.law || "—"}</td>
-      <td>${rating}</td>
-      <td>${fmtScore(r.scoreTotal)}</td>
-      <td><span class="view-pill ${viewClass(r.creditView)}">${r.creditView || "—"}</span></td>
+      <td title="${escapeHtml(ratingTitle)}">${rating}</td>
+      <td><span class="view-pill ${r.validationWarnings?.length ? "pending" : "positive"}" title="${escapeHtml(valTitle)}">${r.validationBadge || "—"}</span></td>
+      <td title="${r.creditMetricsSource ? `Fuente: ${r.creditMetricsSource}` : 'Pendiente de fuente FIX/CNV'}">${r.scoreTotal === null || r.scoreTotal === undefined ? "Pendiente" : fmtScore(r.scoreTotal)}</td>
+      <td><span class="view-pill ${viewClass(r.creditView)}" title="${r.creditMetricsSource ? `Fuente: ${r.creditMetricsSource}` : 'Pendiente de fuente FIX/CNV'}">${r.creditView || "—"}</span></td>
       <td>${fmtRatio(r.netDebtEbitda)}</td>
       <td>${fmtRatio(r.ebitdaInterest)}</td>
       <td>${fmtRatio(r.cashStDebt)}</td>
@@ -101,10 +104,14 @@ function renderCreditTable() {
   if (!tbody) return;
   const q = ($("creditSearch")?.value || "").trim().toLowerCase();
   const rows = (issuerMetrics || []).filter((m) => {
-    const text = `${m.issuer} ${m.sector} ${m.view} ${m.key}`.toLowerCase();
+    const text = `${m.issuer} ${m.sector} ${m.view} ${m.key} ${m.source} ${m.sourceType}`.toLowerCase();
     return !q || text.includes(q);
   });
-  tbody.innerHTML = rows.map((m) => `<tr>
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="11" class="muted">No hay métricas financieras verificadas cargadas. El scoring queda pendiente hasta importar datos desde FIX, CNV/EEFF o carga manual validada.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map((m) => `<tr title="Fuente: ${escapeHtml(m.source || m.sourceType || '—')}">
     <td><strong>${m.issuer || m.key}</strong></td>
     <td>${m.sector || "—"}</td>
     <td>${fmtScore(m.scoreFundamentals)}</td>
@@ -115,6 +122,7 @@ function renderCreditTable() {
     <td>${fmtRatio(m.ebitdaInterest)}</td>
     <td class="${deltaClass(m.scoreChangeYoY, true)}">${m.scoreChangeYoY === null || m.scoreChangeYoY === undefined ? "—" : `${m.scoreChangeYoY > 0 ? "+" : ""}${fmtNum(m.scoreChangeYoY, 1)}`}</td>
     <td>${m.asOf || "—"}</td>
+    <td>${m.source || m.sourceType || "—"}</td>
   </tr>`).join("");
 }
 
@@ -324,8 +332,9 @@ function calcRotation() {
       ${kpi("DV01 posición", `${fmtNum(dv01Sell, 2)} → ${fmtNum(dv01Buy, 2)}`, "Sensibilidad aproximada de la posición ante un movimiento de 1 punto básico en la tasa. Mayor DV01 implica más volatilidad de precio.")}
       ${kpi("Cambio DV01", fmtNum(dv01Delta, 2), "Aumento o reducción de sensibilidad total de la posición ante cambios de tasa.", dv01Delta <= 0 ? "positive" : "negative")}
       ${kpi("Breakeven costo", breakevenMonths ? `${fmtNum(breakevenMonths, 1)} meses` : "—", "Cantidad aproximada de meses de mejora de flujo 12M necesaria para recuperar el costo total de la rotación. Solo se calcula si el flujo 12M mejora.")}
-      ${kpi("Rating", `${sell.rating || "—"} → ${buy.rating || "—"}`, "Compara calidad crediticia. Puede ser rating de emisor o de instrumento según la ficha disponible.")}
-      ${kpi("Score crediticio", `${fmtScore(sell.scoreTotal)} → ${fmtScore(buy.scoreTotal)}`, "Score financiero/cualitativo del emisor cargado desde la base de métricas 1Q26. Mayor score implica mejor calidad relativa dentro del universo comparado.", scoreChange >= 0 ? "positive" : "negative")}
+      ${kpi("Rating", `${sell.ratingDisplay || sell.rating || "Pendiente"} → ${buy.ratingDisplay || buy.rating || "Pendiente"}`, "Compara rating únicamente si está validado contra fuente formal. Si figura pendiente, el dato no está confirmado.", ratingDir === "Mejora calidad" ? "positive" : ratingDir === "Baja calidad" ? "negative" : "")}
+      ${kpi("Validación ficha", `${sell.validationBadge || "—"} → ${buy.validationBadge || "—"}`, "Estado de validación de la ficha técnica. Pendiente CNV/FIX significa que cupón, vencimiento, amortización, ley o rating todavía requieren auditoría formal.", (sell.validationBadge === "Validado" && buy.validationBadge === "Validado") ? "positive" : "")}
+      ${kpi("Score crediticio", `${fmtScore(sell.scoreTotal)} → ${fmtScore(buy.scoreTotal)}`, "Score calculado solo con métricas verificadas desde FIX, CNV/EEFF o carga manual validada. Si figura pendiente, no se debe usar para decidir la rotación.", scoreChange >= 0 ? "positive" : "negative")}
       ${kpi("Preferencia", `${sell.creditView || "—"} → ${buy.creditView || "—"}`, "Sesgo relativo cargado en la base de scoring: positivo, neutral con sesgo positivo, neutral con sesgo negativo o negativo.", (buy.creditViewScore ?? 0) >= (sell.creditViewScore ?? 0) ? "positive" : "negative")}
       ${kpi("ND/EBITDA", `${fmtRatio(sell.netDebtEbitda)}x → ${fmtRatio(buy.netDebtEbitda)}x`, "Apalancamiento neto del emisor. Menor valor suele implicar mejor perfil crediticio.", ndEbitdaChange <= 0 ? "positive" : "negative")}
       ${kpi("EBITDA/Intereses", `${fmtRatio(sell.ebitdaInterest)}x → ${fmtRatio(buy.ebitdaInterest)}x`, "Cobertura de intereses. Mayor valor implica mayor capacidad de pago de intereses con generación operativa.", coverageChange >= 0 ? "positive" : "negative")}
@@ -381,7 +390,7 @@ function download(filename, content, type = "application/json") {
 }
 function exportCsv() {
   const rows = marketData?.rows || [];
-  const headers = ["symbol","issuer","priceArs","priceUsdMep","bidUsdMep","askUsdMep","priceCable","tir","durationMod","maturity","amortizationType","coupon","couponMonths","dollar","law","rating","ratingAgency","scoreFundamentals","scoreTotal","creditView","netDebtEbitda","cashStDebt","ebitdaInterest","minLot","sector","technicalValue","residualValue","parity","spread","priceSource"];
+  const headers = ["symbol","issuer","priceArs","priceUsdMep","bidUsdMep","askUsdMep","priceCable","tir","durationMod","maturity","amortizationType","coupon","couponMonths","dollar","law","ratingDisplay","ratingValidationStatus","validationBadge","rating","ratingAgency","scoreFundamentals","scoreTotal","creditView","netDebtEbitda","cashStDebt","ebitdaInterest","minLot","sector","technicalValue","residualValue","parity","spread","priceSource"];
   const csv = [headers.join(","), ...rows.map(r => headers.map(h => JSON.stringify(r[h] ?? "")).join(","))].join("\n");
   download("bonos-mercado-completo.csv", csv, "text/csv");
 }

@@ -1,0 +1,23 @@
+{
+  "version": "v5.8",
+  "principle": "No se muestran métricas financieras ni scores si la fuente no es FIX, CNV/EEFF o una carga manual verificada.",
+  "acceptedSourceTypes": [
+    "FIX",
+    "CNV_EEFF",
+    "FIX_CNV",
+    "MANUAL_VERIFIED"
+  ],
+  "metricDefinitions": {
+    "netDebtEbitda": "Deuda neta / EBITDA. Menor es mejor.",
+    "cashStDebt": "Caja e inversiones corrientes / deuda de corto plazo. Mayor es mejor.",
+    "ebitdaInterest": "EBITDA / intereses financieros. Mayor es mejor.",
+    "fcf": "Flujo de fondos libre. Mayor/mejor conversión es mejor, condicionado por etapa de inversión.",
+    "scoreFundamentals": "Score 0-10 calculado por la app a partir de apalancamiento, liquidez y cobertura cuando la fuente está verificada."
+  },
+  "weights": {
+    "netDebtEbitda": 0.5,
+    "cashStDebt": 0.25,
+    "ebitdaInterest": 0.25
+  },
+  "note": "Las preferencias cualitativas no se calculan automáticamente desde informes de terceros. Deben cargarse como vista interna validada o quedar pendientes."
+}

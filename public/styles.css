@@ -152,3 +152,7 @@ code { color:#bae6fd; background:#07101f; padding:2px 5px; border-radius:6px; }
 .view-pill.positive { color:#86efac; border-color:rgba(34,197,94,.45); background:rgba(34,197,94,.10); }
 .view-pill.negative { color:#fca5a5; border-color:rgba(255,91,91,.45); background:rgba(255,91,91,.10); }
 .credit-score-card table td, .credit-score-card table th { white-space: nowrap; }
+
+/* v5.9: validation states */
+.badge.pending { background: rgba(250, 204, 21, .12); border-color: rgba(250, 204, 21, .35); color: #fde68a; }
+.view-pill.pending { background: rgba(250, 204, 21, .12); border: 1px solid rgba(250, 204, 21, .35); color: #fde68a; }
