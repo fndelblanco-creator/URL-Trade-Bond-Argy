@@ -1,8 +1,8 @@
 {
   "name": "bonos-rotacion-cloud",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "type": "module",
-  "description": "Dashboard cloud para rotacion de bonos corporativos argentinos con precios USD MEP, ficha tecnica y ratings.",
+  "description": "Dashboard cloud para rotacion de bonos corporativos argentinos con precios ARS, USD MEP, Cable, ficha tecnica y ratings.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

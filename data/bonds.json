@@ -6,34 +6,38 @@
     "cuit": "30506733932",
     "classKeywords": [
       "Clase 38",
-      "Obligaciones Negociables Clase 38",
-      "Adicionales Clase 38"
+      "CGC",
+      "Obligaciones Negociables Clase 38"
     ],
-    "sector": "Oil & Gas",
-    "currency": "USD MEP",
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
     "coupon": 0.11875,
     "maturity": "2030-11-28",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Bullet",
     "amortization": [
       {
         "date": "2030-11-28",
         "percent": 1
       }
     ],
+    "amortizationApprox": false,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
     "law": "NY",
     "rating": "CCC+",
     "ratingAgency": "S&P",
     "ratingOutlook": "",
-    "secured": "Senior unsecured",
-    "sourceStatus": "manual-seed",
-    "notes": "Ficha inicial cargada para que la TIR/duration funcionen. Validar contra aviso/prospecto antes de uso comercial.",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
       "CP38O",
+      "CP38",
       "CP38D",
-      "CP38C",
-      "CGC38",
-      "CP38"
+      "CP38C"
     ]
   },
   {
@@ -42,33 +46,38 @@
     "shortIssuer": "MSU Energy",
     "cuit": "30709411259",
     "classKeywords": [
-      "Clase",
-      "Obligaciones Negociables"
+      "RUCD",
+      "MSU Energy"
     ],
     "sector": "Generación eléctrica",
-    "currency": "USD MEP",
+    "currency": "USD",
     "coupon": 0.0975,
     "maturity": "2030-02-14",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Bullet",
     "amortization": [
       {
         "date": "2030-02-14",
         "percent": 1
       }
     ],
-    "law": "Argentina",
-    "rating": "",
-    "ratingAgency": "FIX/Moody's Local",
+    "amortizationApprox": false,
+    "couponMonths": "feb y ago",
+    "dollar": "MEP",
+    "law": "ARG",
+    "rating": "B(arg)",
+    "ratingAgency": "FIX",
     "ratingOutlook": "",
-    "secured": "Senior secured / validar",
-    "sourceStatus": "manual-seed",
-    "notes": "Completar/validar cupón, clase y amortización con prospecto.",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
       "RUCDO",
+      "RUCD",
       "RUCDD",
-      "RUCDC",
-      "RUCD"
+      "RUCDC"
     ]
   },
   {
@@ -77,33 +86,38 @@
     "shortIssuer": "MSU Energy",
     "cuit": "30709411259",
     "classKeywords": [
-      "Clase",
-      "Obligaciones Negociables"
+      "RUCE",
+      "MSU Energy"
     ],
     "sector": "Generación eléctrica",
-    "currency": "USD MEP",
+    "currency": "USD",
     "coupon": 0.08,
     "maturity": "2027-12-31",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Bullet",
     "amortization": [
       {
         "date": "2027-12-31",
         "percent": 1
       }
     ],
-    "law": "Argentina",
-    "rating": "",
-    "ratingAgency": "FIX/Moody's Local",
+    "amortizationApprox": false,
+    "couponMonths": "jun y dic",
+    "dollar": "MEP",
+    "law": "ARG",
+    "rating": "B(arg)",
+    "ratingAgency": "FIX",
     "ratingOutlook": "",
-    "secured": "Validar",
-    "sourceStatus": "manual-seed",
-    "notes": "Completar/validar condiciones definitivas.",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
       "RUCEO",
+      "RUCE",
       "RUCED",
-      "RUCEC",
-      "RUCE"
+      "RUCEC"
     ]
   },
   {
@@ -112,262 +126,1659 @@
     "shortIssuer": "Telecom",
     "cuit": "30639453738",
     "classKeywords": [
-      "2031",
-      "Obligaciones Negociables"
+      "TLCM",
+      "Telecom"
     ],
     "sector": "Telecomunicaciones",
-    "currency": "USD MEP",
+    "currency": "USD",
     "coupon": 0.0875,
     "maturity": "2031-07-18",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Bullet",
     "amortization": [
       {
         "date": "2031-07-18",
         "percent": 1
       }
     ],
+    "amortizationApprox": false,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
     "law": "NY",
-    "rating": "",
-    "ratingAgency": "FIX/S&P/Moody's",
+    "rating": "AA+(arg)",
+    "ratingAgency": "FIX",
     "ratingOutlook": "",
-    "secured": "Validar",
-    "sourceStatus": "manual-seed",
-    "notes": "Validar ticker/clase con documentación.",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
       "TLCMO",
+      "TLCM",
       "TLCMD",
-      "TLCMC",
-      "TLCM"
+      "TLCMC"
     ]
   },
   {
-    "symbol": "YMCUO",
-    "issuer": "YPF S.A.",
-    "shortIssuer": "YPF",
-    "cuit": "30546689979",
+    "symbol": "CS45O",
+    "issuer": "Cresud S.A.",
+    "shortIssuer": "Cresud",
+    "cuit": "",
     "classKeywords": [
-      "2031",
+      "CS45",
+      "Cresud",
       "Obligaciones Negociables"
     ],
-    "sector": "Oil & Gas",
-    "currency": "USD MEP",
-    "coupon": 0.0875,
-    "maturity": "2031-01-17",
+    "sector": "Bienes raíces",
+    "currency": "USD",
+    "coupon": 0.06,
+    "maturity": "2026-08-22",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Bullet",
     "amortization": [
       {
-        "date": "2031-01-17",
+        "date": "2026-08-22",
         "percent": 1
       }
     ],
-    "law": "NY",
-    "rating": "",
-    "ratingAgency": "FIX/S&P/Moody's",
+    "amortizationApprox": false,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
     "ratingOutlook": "",
-    "secured": "Garantizada / validar",
-    "sourceStatus": "manual-seed",
-    "notes": "Validar cupón/ticker/clase con documentación.",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
-      "YMCUO",
-      "YMCUD",
-      "YMCUC",
-      "YMCU"
+      "CS45O",
+      "CS45",
+      "CS45D",
+      "CS45C"
+    ]
+  },
+  {
+    "symbol": "PNDCO",
+    "issuer": "Pan American Energy",
+    "shortIssuer": "Pan American Energy",
+    "cuit": "",
+    "classKeywords": [
+      "PNDC",
+      "Pan",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0913,
+    "maturity": "2027-04-30",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2025-04-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2026-04-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2027-04-30",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "PNDCO",
+      "PNDC",
+      "PNDCD",
+      "PNDCC"
+    ]
+  },
+  {
+    "symbol": "LMS8O",
+    "issuer": "Aluar",
+    "shortIssuer": "Aluar",
+    "cuit": "",
+    "classKeywords": [
+      "LMS8",
+      "Aluar",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Metales y minería",
+    "currency": "USD",
+    "coupon": 0.0625,
+    "maturity": "2027-03-21",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2025-03-21",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2026-03-21",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2027-03-21",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "mar, jun, sep y dic",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 50,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "LMS8O",
+      "LMS8",
+      "LMS8D",
+      "LMS8C"
+    ]
+  },
+  {
+    "symbol": "VSCOO",
+    "issuer": "Vista Energy",
+    "shortIssuer": "Vista Energy",
+    "cuit": "",
+    "classKeywords": [
+      "VSCO",
+      "Vista",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.065,
+    "maturity": "2027-03-06",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2027-03-06",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "mar y sep",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 100,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "VSCOO",
+      "VSCO",
+      "VSCOD",
+      "VSCOC"
+    ]
+  },
+  {
+    "symbol": "IRCFO",
+    "issuer": "IRSA",
+    "shortIssuer": "IRSA",
+    "cuit": "",
+    "classKeywords": [
+      "IRCF",
+      "IRSA",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Bienes raíces",
+    "currency": "USD",
+    "coupon": 0.0875,
+    "maturity": "2028-06-22",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2026-06-22",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2027-06-22",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2028-06-22",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "jun y dic",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "IRCFO",
+      "IRCF",
+      "IRCFD",
+      "IRCFC"
+    ]
+  },
+  {
+    "symbol": "LMS7O",
+    "issuer": "Aluar",
+    "shortIssuer": "Aluar",
+    "cuit": "",
+    "classKeywords": [
+      "LMS7",
+      "Aluar",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Metales y minería",
+    "currency": "USD",
+    "coupon": 0.07,
+    "maturity": "2028-10-12",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2026-10-12",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2027-10-12",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2028-10-12",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "oct, ene, abr y jul",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 50,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "LMS7O",
+      "LMS7",
+      "LMS7D",
+      "LMS7C"
+    ]
+  },
+  {
+    "symbol": "YMCIO",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
+    "classKeywords": [
+      "YMCI",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.09,
+    "maturity": "2029-06-30",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2027-06-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2028-06-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2029-06-30",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "jun y dic",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YMCIO",
+      "YMCI",
+      "YMCID",
+      "YMCIC"
+    ]
+  },
+  {
+    "symbol": "MGCOO",
+    "issuer": "Pampa Energía",
+    "shortIssuer": "Pampa Energía",
+    "cuit": "",
+    "classKeywords": [
+      "MGCO",
+      "Pampa",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0725,
+    "maturity": "2028-08-06",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2028-08-06",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "feb y ago",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "MGCOO",
+      "MGCO",
+      "MGCOD",
+      "MGCOC"
+    ]
+  },
+  {
+    "symbol": "BYCHO",
+    "issuer": "Banco Galicia",
+    "shortIssuer": "Banco Galicia",
+    "cuit": "",
+    "classKeywords": [
+      "BYCH",
+      "Banco",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Bancos",
+    "currency": "USD",
+    "coupon": 0.0775,
+    "maturity": "2028-10-10",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2028-10-10",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "BYCHO",
+      "BYCH",
+      "BYCHD",
+      "BYCHC"
+    ]
+  },
+  {
+    "symbol": "YMCOO",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
+    "classKeywords": [
+      "YMCO",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.065,
+    "maturity": "2028-10-10",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2028-10-10",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "ene, abr, jul y oct",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YMCOO",
+      "YMCO",
+      "YMCOD",
+      "YMCOC"
+    ]
+  },
+  {
+    "symbol": "YMCZO",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
+    "classKeywords": [
+      "YMCZ",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.07,
+    "maturity": "2029-10-10",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2029-10-10",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YMCZO",
+      "YMCZ",
+      "YMCZD",
+      "YMCZC"
+    ]
+  },
+  {
+    "symbol": "BACGO",
+    "issuer": "Banco Macro",
+    "shortIssuer": "Banco Macro",
+    "cuit": "",
+    "classKeywords": [
+      "BACG",
+      "Banco",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Bancos",
+    "currency": "USD",
+    "coupon": 0.08,
+    "maturity": "2029-06-23",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2029-06-23",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "jun y dic",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "BACGO",
+      "BACG",
+      "BACGD",
+      "BACGC"
+    ]
+  },
+  {
+    "symbol": "VSCUO",
+    "issuer": "Vista Energy",
+    "shortIssuer": "Vista Energy",
+    "cuit": "",
+    "classKeywords": [
+      "VSCU",
+      "Vista",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.075,
+    "maturity": "2030-03-07",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2030-03-07",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "mar y sep",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "VSCUO",
+      "VSCU",
+      "VSCUD",
+      "VSCUC"
+    ]
+  },
+  {
+    "symbol": "YM39O",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
+    "classKeywords": [
+      "YM39",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0875,
+    "maturity": "2030-07-22",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2030-07-22",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YM39O",
+      "YM39",
+      "YM39D",
+      "YM39C"
+    ]
+  },
+  {
+    "symbol": "TLCDO",
+    "issuer": "Tecpetrol",
+    "shortIssuer": "Tecpetrol",
+    "cuit": "",
+    "classKeywords": [
+      "TLCD",
+      "Tecpetrol",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0763,
+    "maturity": "2030-11-03",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2030-11-03",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "TLCDO",
+      "TLCD",
+      "TLCDD",
+      "TLCDC"
+    ]
+  },
+  {
+    "symbol": "VSCRO",
+    "issuer": "Vista Energy",
+    "shortIssuer": "Vista Energy",
+    "cuit": "",
+    "classKeywords": [
+      "VSCR",
+      "Vista",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0765,
+    "maturity": "2031-10-10",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2029-10-10",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2030-10-10",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2031-10-10",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "ARG",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "VSCRO",
+      "VSCR",
+      "VSCRD",
+      "VSCRC"
+    ]
+  },
+  {
+    "symbol": "BACHO",
+    "issuer": "Banco Macro",
+    "shortIssuer": "Banco Macro",
+    "cuit": "",
+    "classKeywords": [
+      "BACH",
+      "Banco",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Bancos",
+    "currency": "USD",
+    "coupon": 0.08,
+    "maturity": "2031-01-28",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2031-01-28",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "BACHO",
+      "BACH",
+      "BACHD",
+      "BACHC"
+    ]
+  },
+  {
+    "symbol": "YMCXO",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
+    "classKeywords": [
+      "YMCX",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0875,
+    "maturity": "2031-09-11",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2029-09-11",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2030-09-11",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2031-09-11",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "mar y sep",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YMCXO",
+      "YMCX",
+      "YMCXD",
+      "YMCXC"
+    ]
+  },
+  {
+    "symbol": "PNXCO",
+    "issuer": "Pan American Energy",
+    "shortIssuer": "Pan American Energy",
+    "cuit": "",
+    "classKeywords": [
+      "PNXC",
+      "Pan",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.085,
+    "maturity": "2032-04-30",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2030-04-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2031-04-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2032-04-30",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "PNXCO",
+      "PNXC",
+      "PNXCD",
+      "PNXCC"
+    ]
+  },
+  {
+    "symbol": "PLC5O",
+    "issuer": "Pluspetrol",
+    "shortIssuer": "Pluspetrol",
+    "cuit": "",
+    "classKeywords": [
+      "PLC5",
+      "Pluspetrol",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0813,
+    "maturity": "2031-11-18",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2031-11-18",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "PLC5O",
+      "PLC5",
+      "PLC5D",
+      "PLC5C"
+    ]
+  },
+  {
+    "symbol": "TSC3O",
+    "issuer": "Transportadora de Gas del Sur",
+    "shortIssuer": "Transportadora de Gas del Sur",
+    "cuit": "",
+    "classKeywords": [
+      "TSC3",
+      "Transportadora",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.085,
+    "maturity": "2031-07-24",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2031-07-24",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "TSC3O",
+      "TSC3",
+      "TSC3D",
+      "TSC3C"
+    ]
+  },
+  {
+    "symbol": "MGCMO",
+    "issuer": "Pampa Energía",
+    "shortIssuer": "Pampa Energía",
+    "cuit": "",
+    "classKeywords": [
+      "MGCM",
+      "Pampa",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0795,
+    "maturity": "2031-09-10",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2031-09-10",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "mar y sep",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 10000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "MGCMO",
+      "MGCM",
+      "MGCMD",
+      "MGCMC"
+    ]
+  },
+  {
+    "symbol": "YFCJO",
+    "issuer": "YPF Energía Eléctrica",
+    "shortIssuer": "YPF Energía Eléctrica",
+    "cuit": "",
+    "classKeywords": [
+      "YFCJ",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Electricidad",
+    "currency": "USD",
+    "coupon": 0.0788,
+    "maturity": "2032-10-16",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2030-10-16",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2031-10-16",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2032-10-16",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YFCJO",
+      "YFCJ",
+      "YFCJD",
+      "YFCJC"
+    ]
+  },
+  {
+    "symbol": "TLCAO",
+    "issuer": "Tecpetrol",
+    "shortIssuer": "Tecpetrol",
+    "cuit": "",
+    "classKeywords": [
+      "TLCA",
+      "Tecpetrol",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0763,
+    "maturity": "2033-01-22",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2031-01-22",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2032-01-22",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2033-01-22",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "TLCAO",
+      "TLCA",
+      "TLCAD",
+      "TLCAC"
+    ]
+  },
+  {
+    "symbol": "PLC4O",
+    "issuer": "Pluspetrol",
+    "shortIssuer": "Pluspetrol",
+    "cuit": "",
+    "classKeywords": [
+      "PLC4",
+      "Pluspetrol",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.085,
+    "maturity": "2032-05-30",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2032-05-30",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "PLC4O",
+      "PLC4",
+      "PLC4D",
+      "PLC4C"
     ]
   },
   {
     "symbol": "VSCVO",
-    "issuer": "Vista Energy Argentina S.A.U.",
-    "shortIssuer": "Vista",
-    "cuit": "30716102536",
+    "issuer": "Vista Energy",
+    "shortIssuer": "Vista Energy",
+    "cuit": "",
     "classKeywords": [
-      "2033",
+      "VSCV",
+      "Vista",
       "Obligaciones Negociables"
     ],
-    "sector": "Oil & Gas",
-    "currency": "USD MEP",
-    "coupon": 0.08,
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.085,
     "maturity": "2033-06-10",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Amortizable",
     "amortization": [
       {
+        "date": "2031-06-10",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2032-06-10",
+        "percent": 0.3333333333333333
+      },
+      {
         "date": "2033-06-10",
-        "percent": 1
+        "percent": 0.3333333333333333
       }
     ],
+    "amortizationApprox": true,
+    "couponMonths": "jun y dic",
+    "dollar": "Cable",
     "law": "NY",
-    "rating": "",
-    "ratingAgency": "FIX/S&P/Moody's",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
     "ratingOutlook": "",
-    "secured": "Validar",
-    "sourceStatus": "manual-seed",
-    "notes": "Validar condiciones definitivas.",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
       "VSCVO",
+      "VSCV",
       "VSCVD",
-      "VSCVC",
-      "VSCV"
+      "VSCVC"
     ]
   },
   {
-    "symbol": "MTCGO",
-    "issuer": "Mastellone Hermanos S.A.",
-    "shortIssuer": "Mastellone",
-    "cuit": "30500858492",
+    "symbol": "YMCJO",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
     "classKeywords": [
-      "Clase 2",
-      "Obligaciones Negociables Clase 2"
+      "YMCJ",
+      "YPF",
+      "Obligaciones Negociables"
     ],
-    "sector": "Alimentos / Lácteos",
-    "currency": "USD MEP",
-    "coupon": 0.0675,
-    "maturity": "2028-06-18",
-    "frequency": 4,
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.07,
+    "maturity": "2033-09-30",
+    "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Amortizable",
     "amortization": [
       {
-        "date": "2028-06-18",
+        "date": "2031-09-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2032-09-30",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2033-09-30",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "mar y sep",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YMCJO",
+      "YMCJ",
+      "YMCJD",
+      "YMCJC"
+    ]
+  },
+  {
+    "symbol": "RC1CO",
+    "issuer": "Arcor",
+    "shortIssuer": "Arcor",
+    "cuit": "",
+    "classKeywords": [
+      "RC1C",
+      "Arcor",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Alimentos",
+    "currency": "USD",
+    "coupon": 0.076,
+    "maturity": "2033-07-31",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2033-07-31",
         "percent": 1
       }
     ],
-    "law": "Argentina",
-    "rating": "A.ar",
-    "ratingAgency": "Moody's Local",
-    "ratingOutlook": "Positiva",
-    "secured": "Senior unsecured / validar",
-    "sourceStatus": "manual-seed",
-    "notes": "Ticker operativo ilustrativo: ajustar cuando se confirme especie de mercado.",
+    "amortizationApprox": false,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
-      "MTCGO",
-      "MTCGD",
-      "MTCGC",
-      "MTCG"
+      "RC1CO",
+      "RC1C",
+      "RC1CD",
+      "RC1CC"
+    ]
+  },
+  {
+    "symbol": "YM34O",
+    "issuer": "YPF",
+    "shortIssuer": "YPF",
+    "cuit": "",
+    "classKeywords": [
+      "YM34",
+      "YPF",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0825,
+    "maturity": "2034-01-17",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2032-01-17",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2033-01-17",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2034-01-17",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "YM34O",
+      "YM34",
+      "YM34D",
+      "YM34C"
+    ]
+  },
+  {
+    "symbol": "IRCPO",
+    "issuer": "IRSA",
+    "shortIssuer": "IRSA",
+    "cuit": "",
+    "classKeywords": [
+      "IRCP",
+      "IRSA",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Bienes raíces",
+    "currency": "USD",
+    "coupon": 0.08,
+    "maturity": "2035-03-31",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2033-03-31",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2034-03-31",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2035-03-31",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "may y sep",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "IRCPO",
+      "IRCP",
+      "IRCPD",
+      "IRCPC"
+    ]
+  },
+  {
+    "symbol": "VSCTO",
+    "issuer": "Vista Energy",
+    "shortIssuer": "Vista Energy",
+    "cuit": "",
+    "classKeywords": [
+      "VSCT",
+      "Vista",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0763,
+    "maturity": "2035-12-10",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2033-12-10",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2034-12-10",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2035-12-10",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "jun y dic",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "VSCTO",
+      "VSCT",
+      "VSCTD",
+      "VSCTC"
+    ]
+  },
+  {
+    "symbol": "TSC4O",
+    "issuer": "Transportadora de Gas del Sur",
+    "shortIssuer": "Transportadora de Gas del Sur",
+    "cuit": "",
+    "classKeywords": [
+      "TSC4",
+      "Transportadora",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0775,
+    "maturity": "2035-11-20",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2035-11-20",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "TSC4O",
+      "TSC4",
+      "TSC4D",
+      "TSC4C"
+    ]
+  },
+  {
+    "symbol": "PN43O",
+    "issuer": "Pan American Energy",
+    "shortIssuer": "Pan American Energy",
+    "cuit": "",
+    "classKeywords": [
+      "PN43",
+      "Pan",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0775,
+    "maturity": "2037-01-15",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2035-01-15",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2036-01-15",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2037-01-15",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "ene y jul",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "PN43O",
+      "PN43",
+      "PN43D",
+      "PN43C"
+    ]
+  },
+  {
+    "symbol": "VSCXO",
+    "issuer": "Vista Energy",
+    "shortIssuer": "Vista Energy",
+    "cuit": "",
+    "classKeywords": [
+      "VSCX",
+      "Vista",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0788,
+    "maturity": "2038-04-08",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Amortizable",
+    "amortization": [
+      {
+        "date": "2036-04-08",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2037-04-08",
+        "percent": 0.3333333333333333
+      },
+      {
+        "date": "2038-04-08",
+        "percent": 0.3333333333333333
+      }
+    ],
+    "amortizationApprox": true,
+    "couponMonths": "abr y oct",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "VSCXO",
+      "VSCX",
+      "VSCXD",
+      "VSCXC"
+    ]
+  },
+  {
+    "symbol": "MGCRO",
+    "issuer": "Pampa Energía",
+    "shortIssuer": "Pampa Energía",
+    "cuit": "",
+    "classKeywords": [
+      "MGCR",
+      "Pampa",
+      "Obligaciones Negociables"
+    ],
+    "sector": "Energía - Petróleo y gas",
+    "currency": "USD",
+    "coupon": 0.0775,
+    "maturity": "2037-11-14",
+    "frequency": 2,
+    "dayCount": "30/360",
+    "amortizationType": "Bullet",
+    "amortization": [
+      {
+        "date": "2037-11-14",
+        "percent": 1
+      }
+    ],
+    "amortizationApprox": false,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
+    "law": "NY",
+    "rating": "AAA(arg)",
+    "ratingAgency": "FIX",
+    "ratingOutlook": "",
+    "minLot": 10000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
+    "aliases": [
+      "MGCRO",
+      "MGCR",
+      "MGCRD",
+      "MGCRC"
     ]
   },
   {
     "symbol": "TLCPO",
-    "aliases": [
-      "TLCPO",
-      "TLCPD",
-      "TLCPC",
-      "TLCP"
-    ],
     "issuer": "Telecom Argentina S.A.",
     "shortIssuer": "Telecom",
     "cuit": "30639453738",
     "classKeywords": [
-      "Clase 24",
-      "2033",
-      "9,250%",
-      "28 de mayo de 2033",
-      "USP9028NCA74"
+      "TLCP",
+      "TLCPO",
+      "Telecom",
+      "Clase 24"
     ],
     "sector": "Telecomunicaciones",
-    "currency": "USD MEP",
+    "currency": "USD",
     "coupon": 0.0925,
     "maturity": "2033-05-28",
     "frequency": 2,
     "dayCount": "30/360",
+    "amortizationType": "Amortizable",
     "amortization": [
       {
+        "date": "2031-05-28",
+        "percent": 0.3333333333333333
+      },
+      {
         "date": "2032-05-28",
-        "percent": 0.5
+        "percent": 0.3333333333333333
       },
       {
         "date": "2033-05-28",
-        "percent": 0.5
+        "percent": 0.3333333333333333
       }
     ],
+    "amortizationApprox": true,
+    "couponMonths": "may y nov",
+    "dollar": "Cable",
     "law": "NY",
     "rating": "AA+(arg)",
     "ratingAgency": "FIX",
-    "ratingOutlook": "Positiva",
-    "secured": "Senior unsecured",
-    "callable": "Sí / validar condiciones de rescate",
-    "sourceStatus": "manual-seed-validar",
-    "technicalSource": "Telecom Aviso de Resultados Clase 24 / datos públicos",
-    "notes": "ON Telecom Clase 24: cupón 9,25%, vencimiento 28/05/2033, amortización 50% 28/05/2032 y 50% 28/05/2033. Validar contra último aviso/prospecto antes de uso comercial."
-  },
-  {
-    "symbol": "TLCTO",
+    "ratingOutlook": "",
+    "minLot": 1000,
+    "secured": "",
+    "sourceStatus": "manual-seed-v5.4",
+    "notes": "Ficha semilla cargada desde tabla de referencia. Validar contra prospecto, aviso de resultados y último informe de rating.",
     "aliases": [
-      "TLCTO",
-      "TLCTD",
-      "TLCTC",
-      "TLCT"
-    ],
-    "issuer": "Telecom Argentina S.A.",
-    "shortIssuer": "Telecom",
-    "cuit": "30639453738",
-    "classKeywords": [
-      "Clase 27",
-      "2036",
-      "8,500%",
-      "20 de enero de 2036"
-    ],
-    "sector": "Telecomunicaciones",
-    "currency": "USD MEP",
-    "coupon": 0.085,
-    "maturity": "2036-01-20",
-    "frequency": 2,
-    "dayCount": "30/360",
-    "amortization": [
-      {
-        "date": "2035-01-20",
-        "percent": 0.5
-      },
-      {
-        "date": "2036-01-20",
-        "percent": 0.5
-      }
-    ],
-    "law": "NY",
-    "rating": "AA+(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "Positiva",
-    "secured": "Senior unsecured",
-    "callable": "Sí / validar condiciones de rescate",
-    "sourceStatus": "manual-seed-validar",
-    "technicalSource": "Telecom Aviso de Resultados Clase 27 / datos públicos",
-    "notes": "ON Telecom Clase 27: cupón 8,50%, vencimiento 20/01/2036, amortización 50% 20/01/2035 y 50% 20/01/2036. Validar contra último aviso/prospecto antes de uso comercial."
-  },
-  {
-    "symbol": "TLCOO",
-    "aliases": [
-      "TLCOO",
-      "TLCOD",
-      "TLCOC",
-      "TLCO"
-    ],
-    "issuer": "Telecom Argentina S.A.",
-    "shortIssuer": "Telecom",
-    "cuit": "30639453738",
-    "classKeywords": [
-      "Clase 23",
-      "2028",
-      "7.00%",
-      "28/11/2028"
-    ],
-    "sector": "Telecomunicaciones",
-    "currency": "USD MEP",
-    "coupon": 0.07,
-    "maturity": "2028-11-28",
-    "frequency": 2,
-    "dayCount": "30/360",
-    "amortization": [
-      {
-        "date": "2028-11-28",
-        "percent": 1
-      }
-    ],
-    "law": "Argentina",
-    "rating": "AA+(arg)",
-    "ratingAgency": "FIX",
-    "ratingOutlook": "Positiva",
-    "secured": "Senior unsecured / validar",
-    "sourceStatus": "manual-seed-validar",
-    "notes": "Condiciones iniciales cargadas desde datos públicos. Validar contra aviso/prospecto antes de uso comercial."
+      "TLCPO",
+      "TLCP",
+      "TLCPD",
+      "TLCPC"
+    ]
   }
 ]

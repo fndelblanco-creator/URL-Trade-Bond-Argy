@@ -12,7 +12,7 @@
       <div>
         <div class="eyebrow">Renta fija corporativa</div>
         <h1>Dashboard de rotación de bonos</h1>
-        <p>Precios USD MEP + ficha técnica CNV/FIX + simulador de rotación.</p>
+        <p>Precios ARS / USD MEP / Cable + ficha técnica + simulador de rotación.</p>
       </div>
       <div id="statusCard" class="status-card muted">
         <span class="dot"></span>
@@ -58,7 +58,7 @@
         <div class="card-head">
           <div>
             <h2>Panel de mercado</h2>
-            <p>Solo especies USD MEP. Si no hay precio USD directo, convierte ARS / MEP.</p>
+            <p>Precios por especie: pesos, USD MEP y Cable. Prioriza USD MEP directo; si no hay profundidad, convierte ARS / MEP.</p>
           </div>
           <input id="tableSearch" type="search" placeholder="Buscar ticker / emisor" />
         </div>
@@ -68,15 +68,27 @@
               <tr>
                 <th>Ticker</th>
                 <th>Emisor</th>
+                <th>Precio $</th>
                 <th>Precio USD MEP</th>
-                <th>Bid</th>
-                <th>Ask</th>
+                <th>Bid MEP</th>
+                <th>Ask MEP</th>
+                <th>Precio Cable</th>
                 <th>TIR</th>
                 <th>Duration mod.</th>
                 <th>Venc.</th>
+                <th>Amortización</th>
+                <th>Cupón</th>
+                <th>Mes cupón</th>
+                <th>Dólar</th>
+                <th>Ley</th>
                 <th>Rating</th>
-                <th>Spread</th>
-                <th>Fuente</th>
+                <th>Lámina mín.</th>
+                <th>Sector</th>
+                <th>Valor técnico</th>
+                <th>Valor residual</th>
+                <th>Paridad</th>
+                <th>Spread MEP</th>
+                <th>Fuente precio</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -130,7 +142,7 @@
         <div class="card-head">
           <div>
             <h2>Bonos con ficha incompleta</h2>
-            <p>Tickers con precio pero sin datos suficientes para calcular TIR, duration o rating.</p>
+            <p>Tickers con precio pero sin datos suficientes para calcular TIR, duration, rating, valor técnico o paridad.</p>
           </div>
         </div>
         <div class="table-wrap small-table">
@@ -185,6 +197,12 @@
           </label>
           <label>Ley
             <input id="editLaw" placeholder="NY / Argentina" />
+          </label>
+          <label>Mes cupón
+            <input id="editCouponMonths" placeholder="Ej: may y nov" />
+          </label>
+          <label>Lámina mínima
+            <input id="editMinLot" type="number" step="1" placeholder="Ej: 1000" />
           </label>
         </div>
         <p class="muted editor-note">Amortización: si no se carga una estructura específica, se asume bullet al vencimiento. Para amortizaciones parciales, editar el JSON completo.</p>

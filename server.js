@@ -3,10 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
-import fsSync from "fs";
 import * as cheerio from "cheerio";
-import pdfParse from "pdf-parse";
-import cron from "node-cron";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,44 +17,31 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const cache = {
-  prices: { ts: 0, data: null },
-  bonds: { ts: 0, data: null },
-};
+const cache = { prices: { ts: 0, data: null }, bonds: { ts: 0, data: null } };
+const MAX_REASONABLE_USD_BOND_PRICE = 500;
+const USD_DIRECT_MIN_DEPTH = Number(process.env.USD_DIRECT_MIN_DEPTH || 1);
 
-function nowIso() {
-  return new Date().toISOString();
-}
-
-function toNumber(value) {
-  if (value === null || value === undefined || value === "") return null;
-  if (typeof value === "number") return Number.isFinite(value) ? value : null;
-  const normalized = String(value)
-    .replace(/\s/g, "")
-    .replace(/\./g, "")
-    .replace(/,/g, ".");
-  const n = Number(normalized);
-  return Number.isFinite(n) ? n : null;
-}
-
+function nowIso() { return new Date().toISOString(); }
+function normalizeSymbol(symbol) { return String(symbol || "").trim().toUpperCase(); }
+function normalizeText(text) { return String(text || "").replace(/\s+/g, " ").trim(); }
 function cleanNumber(value) {
   if (value === null || value === undefined || value === "") return null;
   if (typeof value === "number") return Number.isFinite(value) ? value : null;
-  const s = String(value).trim().replace(/,/g, ".");
+  const raw = String(value).trim();
+  if (!raw) return null;
+  let s = raw.replace(/\s/g, "");
+  // Soporta 1.234,56 y 1234.56
+  if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(/,/g, ".");
+  else s = s.replace(/,/g, ".");
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
-
-function fmtDateKey(date) {
-  return date.toISOString().slice(0, 10);
-}
-
 function parseDate(dateString) {
   if (!dateString) return null;
   const d = new Date(`${dateString}T00:00:00Z`);
   return Number.isNaN(d.getTime()) ? null : d;
 }
-
+function fmtDateKey(date) { return date.toISOString().slice(0, 10); }
 function addMonths(date, months) {
   const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
   const day = d.getUTCDate();
@@ -65,11 +49,7 @@ function addMonths(date, months) {
   if (d.getUTCDate() !== day) d.setUTCDate(0);
   return d;
 }
-
-function yearFracActual365(start, end) {
-  return Math.max(0, (end - start) / (365 * 24 * 60 * 60 * 1000));
-}
-
+function yearFracActual365(start, end) { return Math.max(0, (end - start) / (365 * 24 * 60 * 60 * 1000)); }
 function days360US(start, end) {
   let d1 = start.getUTCDate();
   let d2 = end.getUTCDate();
@@ -81,42 +61,21 @@ function days360US(start, end) {
   if (d2 === 31 && d1 === 30) d2 = 30;
   return 360 * (y2 - y1) + 30 * (m2 - m1) + (d2 - d1);
 }
-
-async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, {
       ...options,
-      headers: {
-        "user-agent": "Mozilla/5.0 DashboardBonos/5.0",
-        accept: "application/json,text/html,application/pdf,*/*",
-        ...(options.headers || {}),
-      },
+      headers: { "user-agent": "Mozilla/5.0 DashboardBonos/5.4", accept: "application/json,text/html,*/*", ...(options.headers || {}) },
       signal: controller.signal,
     });
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     return res;
-  } finally {
-    clearTimeout(timeout);
-  }
+  } finally { clearTimeout(timeout); }
 }
-
-async function fetchJson(url) {
-  const res = await fetchWithTimeout(url);
-  return res.json();
-}
-
-async function fetchText(url) {
-  const res = await fetchWithTimeout(url);
-  return res.text();
-}
-
-async function fetchBuffer(url) {
-  const res = await fetchWithTimeout(url, {}, 20000);
-  const arr = await res.arrayBuffer();
-  return Buffer.from(arr);
-}
+async function fetchJson(url) { const res = await fetchWithTimeout(url); return res.json(); }
+async function fetchText(url) { const res = await fetchWithTimeout(url); return res.text(); }
 
 async function loadBonds() {
   if (cache.bonds.data && Date.now() - cache.bonds.ts < 10_000) return cache.bonds.data;
@@ -125,67 +84,50 @@ async function loadBonds() {
   cache.bonds = { ts: Date.now(), data };
   return data;
 }
-
 async function saveBonds(bonds) {
   await fs.mkdir(DATA_DIR, { recursive: true });
   await fs.writeFile(BONDS_PATH, JSON.stringify(bonds, null, 2), "utf8");
   cache.bonds = { ts: Date.now(), data: bonds };
 }
-
-function normalizeSymbol(symbol) {
-  return String(symbol || "").trim().toUpperCase();
-}
-
-function isCclSymbol(symbol) {
-  return /C$/.test(normalizeSymbol(symbol));
-}
-
-function isUsdMepSymbol(symbol) {
-  return /O$/.test(normalizeSymbol(symbol));
-}
-
 function baseSymbol(symbol) {
   const s = normalizeSymbol(symbol);
-  if (/[OCPD]$/.test(s)) return s.slice(0, -1);
+  if (!s) return "";
+  if (/[OCDP]$/.test(s)) return s.slice(0, -1);
   return s;
 }
-
-
 function symbolAliasesOf(bond) {
-  const values = [bond?.symbol, ...(Array.isArray(bond?.aliases) ? bond.aliases : [])];
-  return Array.from(new Set(values.map(normalizeSymbol).filter(Boolean)));
+  const vals = [bond?.symbol, ...(Array.isArray(bond?.aliases) ? bond.aliases : [])];
+  const out = new Set();
+  for (const v of vals) {
+    const s = normalizeSymbol(v);
+    if (!s) continue;
+    out.add(s);
+    const b = baseSymbol(s);
+    if (b) { out.add(b); out.add(`${b}O`); out.add(`${b}D`); out.add(`${b}C`); }
+  }
+  return [...out];
 }
-
 function findBondIndexBySymbol(bonds, symbol, base = null) {
   const s = normalizeSymbol(symbol);
   const b = normalizeSymbol(base || baseSymbol(s));
-  for (let i = 0; i < bonds.length; i += 1) {
-    const aliases = symbolAliasesOf(bonds[i]);
-    if (aliases.includes(s)) return i;
-  }
-  // Fallback conservador: matchea por base exacta, útil para especies D/O/C/P del mismo bono.
-  for (let i = 0; i < bonds.length; i += 1) {
-    const aliases = symbolAliasesOf(bonds[i]);
-    if (aliases.some((a) => baseSymbol(a) === b)) return i;
-  }
+  for (let i = 0; i < bonds.length; i++) if (symbolAliasesOf(bonds[i]).includes(s)) return i;
+  for (let i = 0; i < bonds.length; i++) if (symbolAliasesOf(bonds[i]).some(a => baseSymbol(a) === b)) return i;
   return -1;
 }
-
 function findBondTech(bonds, symbol, base = null) {
   const idx = findBondIndexBySymbol(bonds, symbol, base);
   return idx >= 0 ? bonds[idx] : null;
 }
-
 function technicalProblems(tech) {
   if (!tech) return ["Falta ficha técnica"];
-  const problems = [];
-  if (!tech.issuer && !tech.shortIssuer) problems.push("Falta emisor");
-  if (!tech.coupon && tech.coupon !== 0) problems.push("Falta cupón");
-  if (!tech.maturity) problems.push("Falta vencimiento");
-  if (!tech.frequency) problems.push("Falta frecuencia");
-  if (!Array.isArray(tech.amortization) || !tech.amortization.length) problems.push("Falta amortización");
-  if (!tech.rating) problems.push("Falta rating");
-  return problems;
+  const p = [];
+  if (!tech.issuer && !tech.shortIssuer) p.push("Falta emisor");
+  if (tech.coupon === undefined || tech.coupon === null || tech.coupon === "") p.push("Falta cupón");
+  if (!tech.maturity) p.push("Falta vencimiento");
+  if (!tech.frequency) p.push("Falta frecuencia");
+  if (!Array.isArray(tech.amortization) || !tech.amortization.length) p.push("Falta amortización");
+  if (!tech.rating) p.push("Falta rating");
+  return p;
 }
 
 function normalizeMarketRow(row) {
@@ -196,81 +138,137 @@ function normalizeMarketRow(row) {
   const volume = cleanNumber(row.v ?? row.volume ?? row.volumen);
   const qBid = cleanNumber(row.q_bid ?? row.bid_size ?? row.cantidad_compra);
   const qAsk = cleanNumber(row.q_ask ?? row.ask_size ?? row.cantidad_venta);
+  const qOp = cleanNumber(row.q_op ?? row.trades ?? row.operaciones);
   const pctChange = cleanNumber(row.pct_change ?? row.change_percent ?? row.var_pct);
-  return { raw: row, symbol, base: baseSymbol(symbol), last, bid, ask, volume, qBid, qAsk, pctChange };
+  return { raw: row, symbol, base: baseSymbol(symbol), last, bid, ask, volume, qBid, qAsk, qOp, pctChange };
 }
-
+function representativePrice(row) {
+  if (!row) return null;
+  if (row.bid && row.ask) return (row.bid + row.ask) / 2;
+  return row.last || row.bid || row.ask || null;
+}
+function isLikelyArs(row) { const p = representativePrice(row); return p !== null && p > MAX_REASONABLE_USD_BOND_PRICE; }
+function scaleUsdPrice(n) {
+  const v = cleanNumber(n);
+  if (!v || v <= 0) return null;
+  // Algunas fuentes muestran 1,105 en vez de 110,50 por 100 VN.
+  if (v > 0 && v < 10) return v * 100;
+  return v;
+}
+function rowDepth(row) { return (row?.qBid || 0) + (row?.qAsk || 0) + (row?.qOp || 0) + ((row?.volume || 0) > 0 ? 1 : 0); }
+function normalizeUsdDirectRow(row) {
+  if (!row) return null;
+  return {
+    last: scaleUsdPrice(row.last),
+    bid: scaleUsdPrice(row.bid),
+    ask: scaleUsdPrice(row.ask),
+    symbol: row.symbol,
+    depth: rowDepth(row),
+    volume: row.volume,
+    qBid: row.qBid,
+    qAsk: row.qAsk,
+    qOp: row.qOp,
+    pctChange: row.pctChange,
+  };
+}
+function convertArsRowToUsd(row, mep) {
+  if (!row || !mep || mep <= 0) return null;
+  const div = (x) => { const n = cleanNumber(x); return n && n > 0 ? n / mep : null; };
+  return {
+    last: div(row.last), bid: div(row.bid), ask: div(row.ask), symbol: row.symbol,
+    depth: rowDepth(row), volume: row.volume, qBid: row.qBid, qAsk: row.qAsk, qOp: row.qOp, pctChange: row.pctChange,
+  };
+}
 function extractMepValue(payload) {
   const rows = Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : [payload];
-  const candidates = [];
+  const preferred = [];
+  const all = [];
   for (const r of rows) {
     if (!r || typeof r !== "object") continue;
+    const text = JSON.stringify(r).toLowerCase();
     for (const key of ["mark", "close", "c", "last", "price", "px", "mep", "value", "ask", "bid"]) {
       const value = cleanNumber(r[key]);
-      if (value && value > 500 && value < 10000) candidates.push(value);
+      if (value && value > 500 && value < 10000) {
+        all.push(value);
+        if (/mep|al30|gd30/.test(text)) preferred.push(value);
+      }
     }
   }
-  if (!candidates.length) return null;
-  candidates.sort((a, b) => a - b);
-  return candidates[Math.floor(candidates.length / 2)];
+  const arr = preferred.length ? preferred : all;
+  if (!arr.length) return null;
+  arr.sort((a, b) => a - b);
+  return arr[Math.floor(arr.length / 2)];
+}
+function selectPricesForGroup(groupRows, mep) {
+  const arsRows = [];
+  const mepRows = [];
+  const cableRows = [];
+  for (const r of groupRows) {
+    const p = representativePrice(r);
+    if (!p) continue;
+    const s = normalizeSymbol(r.symbol);
+    if (isLikelyArs(r)) arsRows.push(r);
+    else if (/C$/.test(s)) cableRows.push(r);
+    else mepRows.push(r);
+  }
+  const pickBest = (rows) => rows.slice().sort((a,b) => rowDepth(b)-rowDepth(a))[0] || null;
+  const directMep = normalizeUsdDirectRow(pickBest(mepRows));
+  const cable = normalizeUsdDirectRow(pickBest(cableRows));
+  const ars = pickBest(arsRows);
+  const converted = convertArsRowToUsd(ars, mep);
+  const useDirect = directMep && directMep.depth >= USD_DIRECT_MIN_DEPTH;
+  let selected = useDirect ? directMep : (converted || directMep || null);
+  let source = useDirect ? `USD MEP directo (${directMep.symbol})` : "—";
+  if (!useDirect && converted) source = directMep ? `ARS/MEP por baja liquidez USD (${ars.symbol})` : `ARS/MEP (${ars.symbol})`;
+  if (!selected && cable) { selected = cable; source = `Cable directo (${cable.symbol})`; }
+  const mid = (x) => x ? (x.bid && x.ask ? (x.bid + x.ask) / 2 : (x.last || x.bid || x.ask || null)) : null;
+  return {
+    selected, source,
+    priceUsdMep: mid(selected), bidUsdMep: selected?.bid || null, askUsdMep: selected?.ask || null, lastUsdMep: selected?.last || null,
+    priceArs: representativePrice(ars), bidArs: ars?.bid || null, askArs: ars?.ask || null, symbolArs: ars?.symbol || null,
+    priceCable: mid(cable), bidCable: cable?.bid || null, askCable: cable?.ask || null, symbolCable: cable?.symbol || null,
+    directMepSymbol: directMep?.symbol || null, selectedSymbol: selected?.symbol || null,
+    volume: selected?.volume || ars?.volume || cable?.volume || null,
+    qBid: selected?.qBid ?? null, qAsk: selected?.qAsk ?? null, qOp: selected?.qOp ?? null,
+  };
 }
 
 function couponSchedule(tech, today = new Date()) {
-  const maturity = parseDate(tech.maturity);
+  const maturity = parseDate(tech?.maturity);
   if (!maturity || !tech.frequency) return [];
-  const interval = Math.round(12 / tech.frequency);
+  const interval = Math.max(1, Math.round(12 / Number(tech.frequency)));
   const dates = [];
   let d = maturity;
   let guard = 0;
-  while (d > addMonths(today, -60) && guard < 200) {
-    dates.push(d);
-    d = addMonths(d, -interval);
-    guard += 1;
-  }
+  while (d > addMonths(today, -60) && guard < 240) { dates.push(d); d = addMonths(d, -interval); guard += 1; }
   return dates.sort((a, b) => a - b);
 }
-
 function getOutstandingBefore(tech, date) {
-  const amorts = Array.isArray(tech.amortization) ? tech.amortization : [];
+  const amorts = Array.isArray(tech?.amortization) ? tech.amortization : [];
   let outstanding = 100;
-  for (const a of amorts) {
-    const ad = parseDate(a.date);
-    if (ad && ad < date) outstanding -= 100 * Number(a.percent || 0);
-  }
+  for (const a of amorts) { const ad = parseDate(a.date); if (ad && ad < date) outstanding -= 100 * Number(a.percent || 0); }
   return Math.max(0, outstanding);
 }
-
 function getPrincipalOnDate(tech, date) {
   const key = fmtDateKey(date);
-  const amorts = Array.isArray(tech.amortization) ? tech.amortization : [];
-  return amorts
-    .filter((a) => a.date === key)
-    .reduce((acc, a) => acc + 100 * Number(a.percent || 0), 0);
+  const amorts = Array.isArray(tech?.amortization) ? tech.amortization : [];
+  return amorts.filter(a => a.date === key).reduce((acc, a) => acc + 100 * Number(a.percent || 0), 0);
 }
-
 function buildCashflows(tech, today = new Date()) {
-  if (!tech?.coupon || !tech?.maturity || !tech?.frequency) return [];
-  const schedule = couponSchedule(tech, today);
-  const flows = [];
-  for (const d of schedule) {
-    if (d <= today) continue;
+  if (!tech || tech.coupon === undefined || !tech.maturity || !tech.frequency) return [];
+  return couponSchedule(tech, today).filter(d => d > today).map(d => {
     const outstanding = getOutstandingBefore(tech, d);
     const interest = outstanding * Number(tech.coupon) / Number(tech.frequency);
     const principal = getPrincipalOnDate(tech, d);
-    const cf = interest + principal;
-    if (cf > 0) {
-      flows.push({ date: fmtDateKey(d), t: yearFracActual365(today, d), interest, principal, cf });
-    }
-  }
-  return flows;
+    return { date: fmtDateKey(d), t: yearFracActual365(today, d), interest, principal, cf: interest + principal };
+  }).filter(f => f.cf > 0);
 }
-
 function accruedInterest(tech, today = new Date()) {
-  if (!tech?.coupon || !tech?.frequency || !tech?.maturity) return 0;
+  if (!tech || tech.coupon === undefined || !tech.frequency || !tech.maturity) return 0;
   const schedule = couponSchedule(tech, today);
-  const future = schedule.find((d) => d > today);
+  const future = schedule.find(d => d > today);
   if (!future) return 0;
-  const interval = Math.round(12 / tech.frequency);
+  const interval = Math.max(1, Math.round(12 / Number(tech.frequency)));
   const previous = addMonths(future, -interval);
   const outstanding = getOutstandingBefore(tech, today);
   const couponPayment = outstanding * Number(tech.coupon) / Number(tech.frequency);
@@ -278,41 +276,28 @@ function accruedInterest(tech, today = new Date()) {
   const total = Math.max(1, days360US(previous, future));
   return couponPayment * Math.min(1, elapsed / total);
 }
-
 function solveIrr(flows, dirtyPrice) {
   if (!flows.length || !dirtyPrice || dirtyPrice <= 0) return null;
   const pv = (y) => flows.reduce((acc, f) => acc + f.cf / Math.pow(1 + y, f.t), 0) - dirtyPrice;
-  let lo = -0.95;
-  let hi = 2.0;
-  let fLo = pv(lo);
-  let fHi = pv(hi);
-  for (let tries = 0; tries < 10 && fLo * fHi > 0; tries += 1) {
-    hi *= 2;
-    fHi = pv(hi);
-  }
+  let lo = -0.95, hi = 3.0, fLo = pv(lo), fHi = pv(hi);
+  for (let tries = 0; tries < 12 && fLo * fHi > 0; tries++) { hi *= 1.8; fHi = pv(hi); }
   if (!Number.isFinite(fLo) || !Number.isFinite(fHi) || fLo * fHi > 0) return null;
-  for (let i = 0; i < 100; i += 1) {
-    const mid = (lo + hi) / 2;
-    const fMid = pv(mid);
+  for (let i = 0; i < 120; i++) {
+    const mid = (lo + hi) / 2, fMid = pv(mid);
     if (Math.abs(fMid) < 1e-8) return mid;
-    if (fLo * fMid <= 0) {
-      hi = mid;
-      fHi = fMid;
-    } else {
-      lo = mid;
-      fLo = fMid;
-    }
+    if (fLo * fMid <= 0) { hi = mid; fHi = fMid; } else { lo = mid; fLo = fMid; }
   }
   return (lo + hi) / 2;
 }
-
 function calcMetrics(tech, cleanPrice, today = new Date()) {
-  if (!tech || !cleanPrice || cleanPrice <= 0 || !tech.maturity || !tech.coupon || !tech.frequency) {
-    return { tir: null, durationMod: null, accrued: null, dirtyPrice: null, flows12: null, flows24: null, cashflows: [] };
+  if (!tech || !cleanPrice || cleanPrice <= 0 || !tech.maturity || tech.coupon === undefined || !tech.frequency) {
+    return { tir: null, durationMod: null, accrued: null, dirtyPrice: null, technicalValue: null, residualValue: null, parity: null, flows12: null, flows24: null, cashflows: [] };
   }
   const clean = Number(cleanPrice);
+  const residualValue = getOutstandingBefore(tech, today);
   const accrued = accruedInterest(tech, today);
   const dirty = clean + accrued;
+  const technicalValue = residualValue + accrued;
   const cashflows = buildCashflows(tech, today);
   const y = solveIrr(cashflows, dirty);
   let durationMod = null;
@@ -323,375 +308,110 @@ function calcMetrics(tech, cleanPrice, today = new Date()) {
       durationMod = macaulay / (1 + y);
     }
   }
-  const flows12 = cashflows.filter((f) => f.t <= 1).reduce((a, f) => a + f.cf, 0);
-  const flows24 = cashflows.filter((f) => f.t <= 2).reduce((a, f) => a + f.cf, 0);
-  return { tir: y, durationMod, accrued, dirtyPrice: dirty, flows12, flows24, cashflows };
+  const flows12 = cashflows.filter(f => f.t <= 1).reduce((a, f) => a + f.cf, 0);
+  const flows24 = cashflows.filter(f => f.t <= 2).reduce((a, f) => a + f.cf, 0);
+  const parity = technicalValue > 0 ? dirty / technicalValue : null;
+  return { tir: y, durationMod, accrued, dirtyPrice: dirty, technicalValue, residualValue, parity, flows12, flows24, cashflows };
 }
-
-function spreadPct(bid, ask) {
-  if (!bid || !ask || bid <= 0 || ask <= 0) return null;
-  const mid = (bid + ask) / 2;
-  return (ask - bid) / mid;
-}
-
-// En Data912, algunas especies corporativas que terminan en O pueden venir con precio
-// expresado en ARS. Para el dashboard normalizamos todo a USD MEP.
-// Regla práctica: precio por 100 VN de un bono en USD suele estar cerca de 30-200.
-// Si el número viene arriba de 500, lo tratamos como precio en ARS y lo dividimos por MEP.
-const MAX_REASONABLE_USD_BOND_PRICE = 500;
-
-function needsArsToMepConversion(value) {
-  return value !== null && value !== undefined && Number(value) > MAX_REASONABLE_USD_BOND_PRICE;
-}
-
-function normalizePriceToUsdMep(value, mep, forceArs = false) {
-  const n = cleanNumber(value);
-  if (n === null || n <= 0) return { value: null, converted: false, unavailable: false };
-  if (forceArs || needsArsToMepConversion(n)) {
-    if (!mep || mep <= 0) return { value: null, converted: false, unavailable: true };
-    return { value: n / mep, converted: true, unavailable: false };
-  }
-  return { value: n, converted: false, unavailable: false };
-}
-
-function normalizeRowPricesToUsdMep(row, mep, forceArs = false) {
-  const last = normalizePriceToUsdMep(row.last, mep, forceArs);
-  const bid = normalizePriceToUsdMep(row.bid, mep, forceArs);
-  const ask = normalizePriceToUsdMep(row.ask, mep, forceArs);
-  const converted = last.converted || bid.converted || ask.converted;
-  const unavailable = last.unavailable || bid.unavailable || ask.unavailable;
-  return {
-    lastUsd: last.value,
-    bidUsd: bid.value,
-    askUsd: ask.value,
-    converted,
-    unavailable,
-  };
-}
+function spreadPct(bid, ask) { if (!bid || !ask || bid <= 0 || ask <= 0) return null; const mid = (bid + ask) / 2; return (ask - bid) / mid; }
 
 async function getPrices() {
   if (cache.prices.data && Date.now() - cache.prices.ts < 15_000) return cache.prices.data;
   const errors = [];
-  let corpPayload;
-  let mepPayload;
-  try {
-    corpPayload = await fetchJson(`${DATA912_BASE_URL}/live/arg_corp`);
-  } catch (e) {
-    errors.push(`Data912 arg_corp: ${e.message}`);
-  }
-  try {
-    mepPayload = await fetchJson(`${DATA912_BASE_URL}/live/mep`);
-  } catch (e) {
-    errors.push(`Data912 mep: ${e.message}`);
-  }
+  let corpPayload, mepPayload;
+  try { corpPayload = await fetchJson(`${DATA912_BASE_URL}/live/arg_corp`); } catch (e) { errors.push(`Data912 arg_corp: ${e.message}`); }
+  try { mepPayload = await fetchJson(`${DATA912_BASE_URL}/live/mep`); } catch (e) { errors.push(`Data912 mep: ${e.message}`); }
   const mep = mepPayload ? extractMepValue(mepPayload) : null;
   const corpRowsRaw = Array.isArray(corpPayload) ? corpPayload : Array.isArray(corpPayload?.data) ? corpPayload.data : [];
-  const rows = corpRowsRaw.map(normalizeMarketRow).filter((r) => r.symbol);
-  const usdMap = new Map();
-  const arsMap = new Map();
-  for (const r of rows) {
-    if (isCclSymbol(r.symbol)) continue;
-    if (isUsdMepSymbol(r.symbol)) usdMap.set(r.base, r);
-    else if (!arsMap.has(r.base)) arsMap.set(r.base, r);
+  const rawRows = corpRowsRaw.map(normalizeMarketRow).filter(r => r.symbol);
+  const groupMap = new Map();
+  for (const r of rawRows) {
+    if (!groupMap.has(r.base)) groupMap.set(r.base, []);
+    groupMap.get(r.base).push(r);
   }
-  const bases = new Set([...usdMap.keys(), ...arsMap.keys()]);
   const bonds = await loadBonds();
   const today = new Date();
+  const basesFromBonds = new Set();
+  for (const b of bonds) for (const a of symbolAliasesOf(b)) basesFromBonds.add(baseSymbol(a));
+  const bases = new Set([...groupMap.keys(), ...basesFromBonds]);
   const out = [];
   for (const base of bases) {
-    const usd = usdMap.get(base);
-    const ars = arsMap.get(base);
-
-    // Preferimos la especie O cuando existe. Si Data912 la informa en ARS, la convertimos.
-    // Si no existe especie O, usamos la especie en pesos y la convertimos por MEP.
-    let chosen = usd || ars;
-    if (!chosen) continue;
-
-    const forceArs = !usd;
-    const normalizedPrices = normalizeRowPricesToUsdMep(chosen, mep, forceArs);
-    if (normalizedPrices.unavailable || (!normalizedPrices.lastUsd && !normalizedPrices.bidUsd && !normalizedPrices.askUsd)) {
-      continue;
-    }
-
-    const symbol = normalizeSymbol(usd?.symbol || `${base}O`);
-    const lastUsd = normalizedPrices.lastUsd;
-    const bidUsd = normalizedPrices.bidUsd;
-    const askUsd = normalizedPrices.askUsd;
-    const tablePrice = bidUsd && askUsd ? (bidUsd + askUsd) / 2 : lastUsd || bidUsd || askUsd;
-
-    let priceSource = "USD MEP directo";
-    if (usd && normalizedPrices.converted) priceSource = "Especie O convertida: ARS / MEP";
-    if (!usd && ars) priceSource = "Especie ARS convertida: ARS / MEP";
-
-    const tech = findBondTech(bonds, symbol, base);
+    const groupRows = groupMap.get(base) || [];
+    const firstSym = groupRows[0]?.symbol || `${base}O`;
+    const tech = findBondTech(bonds, firstSym, base);
+    if (!groupRows.length && !tech) continue;
+    const prices = selectPricesForGroup(groupRows, mep);
+    const displaySymbol = tech?.symbol || prices.selectedSymbol || firstSym;
+    const price = prices.priceUsdMep;
+    const metrics = tech ? calcMetrics(tech, price, today) : calcMetrics(null, null, today);
     const problems = technicalProblems(tech);
-    const metrics = tech ? calcMetrics(tech, tablePrice, today) : calcMetrics(null, null, today);
     out.push({
-      symbol,
-      base,
-      canonicalSymbol: tech?.symbol || null,
-      aliases: tech ? symbolAliasesOf(tech) : [],
-      hasTechnical: !!tech,
-      technicalProblems: problems,
-      issuer: tech?.shortIssuer || tech?.issuer || "—",
-      sector: tech?.sector || "—",
-      priceUsd: tablePrice,
-      lastUsd,
-      bidUsd,
-      askUsd,
-      rawLast: chosen.last,
-      rawBid: chosen.bid,
-      rawAsk: chosen.ask,
-      volume: chosen.volume,
-      qBid: chosen.qBid,
-      qAsk: chosen.qAsk,
-      pctChange: chosen.pctChange,
-      spread: spreadPct(bidUsd, askUsd),
-      priceSource,
-      mepUsed: normalizedPrices.converted ? mep : null,
-      maturity: tech?.maturity || null,
-      coupon: tech?.coupon ?? null,
-      frequency: tech?.frequency ?? null,
-      rating: tech?.rating || null,
-      ratingAgency: tech?.ratingAgency || null,
-      law: tech?.law || null,
-      secured: tech?.secured || null,
-      sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"),
-      validationStatus: problems.length ? problems.join("; ") : "OK",
-      tir: metrics.tir,
-      durationMod: metrics.durationMod,
-      accrued: metrics.accrued,
-      dirtyPrice: metrics.dirtyPrice,
-      flows12: metrics.flows12,
-      flows24: metrics.flows24,
-      cashflows: metrics.cashflows?.slice(0, 12) || [],
+      symbol: displaySymbol, base, canonicalSymbol: tech?.symbol || null, aliases: tech ? symbolAliasesOf(tech) : [],
+      hasTechnical: !!tech, technicalProblems: problems,
+      issuer: tech?.shortIssuer || tech?.issuer || "—", sector: tech?.sector || "—",
+      priceArs: prices.priceArs, bidArs: prices.bidArs, askArs: prices.askArs, symbolArs: prices.symbolArs,
+      priceUsdMep: prices.priceUsdMep, bidUsdMep: prices.bidUsdMep, askUsdMep: prices.askUsdMep, lastUsdMep: prices.lastUsdMep,
+      priceCable: prices.priceCable, bidCable: prices.bidCable, askCable: prices.askCable, symbolCable: prices.symbolCable,
+      priceUsd: prices.priceUsdMep, bidUsd: prices.bidUsdMep, askUsd: prices.askUsdMep,
+      volume: prices.volume, qBid: prices.qBid, qAsk: prices.qAsk, qOp: prices.qOp,
+      spread: spreadPct(prices.bidUsdMep, prices.askUsdMep), priceSource: prices.source, mepUsed: prices.source?.includes("ARS") ? mep : null,
+      maturity: tech?.maturity || null, coupon: tech?.coupon ?? null, couponMonths: tech?.couponMonths || null, frequency: tech?.frequency ?? null,
+      amortizationType: tech?.amortizationType || (tech?.amortization?.length === 1 ? "Bullet" : "Amortizable"), amortizationApprox: !!tech?.amortizationApprox,
+      dollar: tech?.dollar || null, law: tech?.law || null, rating: tech?.rating || null, ratingAgency: tech?.ratingAgency || null, minLot: tech?.minLot ?? null,
+      sourceStatus: tech?.sourceStatus || (tech ? "manual" : "sin ficha técnica"), validationStatus: problems.length ? problems.join("; ") : "OK",
+      tir: metrics.tir, durationMod: metrics.durationMod, accrued: metrics.accrued, dirtyPrice: metrics.dirtyPrice,
+      technicalValue: metrics.technicalValue, residualValue: metrics.residualValue, parity: metrics.parity,
+      flows12: metrics.flows12, flows24: metrics.flows24, cashflows: metrics.cashflows?.slice(0, 12) || [],
     });
   }
-  out.sort((a, b) => a.symbol.localeCompare(b.symbol));
-  const missingTechnical = out
-    .filter((r) => !r.hasTechnical || r.technicalProblems?.length)
-    .map((r) => ({
-      symbol: r.symbol,
-      base: r.base,
-      issuer: r.issuer,
-      priceUsd: r.priceUsd,
-      problems: r.technicalProblems || [],
-      suggestion: !r.hasTechnical ? "Crear ficha o agregar alias" : "Completar campos faltantes"
-    }));
-  const payload = { asOf: nowIso(), mep, rows: out, missingTechnical, errors };
+  out.sort((a,b) => (a.issuer === "—" ? 1 : 0) - (b.issuer === "—" ? 1 : 0) || a.symbol.localeCompare(b.symbol));
+  const missingTechnical = out.filter(r => !r.hasTechnical || r.technicalProblems?.length).map(r => ({ symbol: r.symbol, base: r.base, issuer: r.issuer, priceUsd: r.priceUsdMep, problems: r.technicalProblems || [], suggestion: !r.hasTechnical ? "Crear ficha o agregar alias" : "Completar campos faltantes" }));
+  const payload = { ok: true, asOf: nowIso(), mep, rows: out, missingTechnical, errors };
   cache.prices = { ts: Date.now(), data: payload };
   return payload;
 }
 
-function normalizeText(s) {
-  return String(s || "").replace(/\s+/g, " ").trim();
-}
-
-const MONTHS_ES = {
-  enero: "01", febrero: "02", marzo: "03", abril: "04", mayo: "05", junio: "06",
-  julio: "07", agosto: "08", septiembre: "09", setiembre: "09", octubre: "10", noviembre: "11", diciembre: "12",
-};
-
-function parseSpanishDate(match) {
-  if (!match) return null;
-  const m = String(match).toLowerCase().match(/(\d{1,2})\s+de\s+([a-záéíóúñ]+)\s+de\s+(\d{4})/i);
-  if (!m) return null;
-  const dd = m[1].padStart(2, "0");
-  const mm = MONTHS_ES[m[2].normalize("NFD").replace(/[\u0300-\u036f]/g, "")] || null;
-  if (!mm) return null;
-  return `${m[3]}-${mm}-${dd}`;
-}
-
-function extractTechnicalFromText(rawText) {
-  const text = normalizeText(rawText);
-  const patch = {};
-  const couponMatch = text.match(/tasa(?:\s+de\s+inter[eé]s)?(?:\s+fija)?(?:\s+nominal\s+anual)?(?:\s+del|\s*:)?\s*(\d{1,2}(?:[,.]\d+)?)\s*%/i);
-  if (couponMatch) patch.coupon = toNumber(couponMatch[1]) / 100;
-  const maturityMatch = text.match(/vencimiento(?:\s+el|\s+en)?\s+(\d{1,2}\s+de\s+[a-záéíóúñ]+\s+de\s+\d{4})/i);
-  if (maturityMatch) patch.maturity = parseSpanishDate(maturityMatch[1]);
-  if (/semestral(?:mente)?/i.test(text)) patch.frequency = 2;
-  if (/trimestral(?:mente)?/i.test(text)) patch.frequency = 4;
-  if (/mensual(?:mente)?/i.test(text)) patch.frequency = 12;
-  if (/amortizar[áa].{0,80}(?:[úu]nica cuota|vencimiento|bullet)/i.test(text) || /amortizaci[oó]n.{0,80}(?:[úu]nica cuota|vencimiento|bullet)/i.test(text)) {
-    if (patch.maturity) patch.amortization = [{ date: patch.maturity, percent: 1 }];
-  }
-  if (/ley(?:es)?\s+del\s+Estado\s+de\s+Nueva\s+York|New\s+York/i.test(text)) patch.law = "NY";
-  else if (/ley(?:es)?\s+argentina|Rep[uú]blica\s+Argentina/i.test(text)) patch.law = "Argentina";
-  if (/garantizada|senior secured|garant[ií]a/i.test(text)) patch.secured = "Revisar garantía / menciona garantía";
-  if (/no\s+garantizada|unsecured/i.test(text)) patch.secured = "Senior unsecured";
-  return patch;
-}
-
-async function readPdfText(url) {
-  const buffer = await fetchBuffer(url);
-  const parsed = await pdfParse(buffer);
-  return parsed.text || "";
-}
-
-function includesAnyKeyword(text, keywords = []) {
-  const lower = normalizeText(text).toLowerCase();
-  return keywords.some((k) => lower.includes(String(k).toLowerCase()));
-}
-
-async function syncCnvForBond(bond) {
-  if (!bond?.cuit) return { ok: false, message: "Falta CUIT del emisor" };
-  const url = `https://www.cnv.gov.ar/SitioWeb/Empresas/Empresa/${bond.cuit}?formType=EMISIO`;
-  const result = { ok: true, url, documents: [], patch: {}, confidence: "baja", warnings: [] };
-  try {
-    const html = await fetchText(url);
-    const $ = cheerio.load(html);
-    const pageText = normalizeText($.text());
-    if (includesAnyKeyword(pageText, bond.classKeywords || [])) {
-      result.patch = { ...result.patch, ...extractTechnicalFromText(pageText) };
-      result.confidence = Object.keys(result.patch).length ? "media" : "baja";
-    }
-    $("a").each((_, el) => {
-      const href = $(el).attr("href") || "";
-      const label = normalizeText($(el).text());
-      const combined = `${label} ${href}`;
-      if (/prospecto|suplemento|aviso|emisi[oó]n|obligaciones/i.test(combined)) {
-        let fullUrl = href;
-        if (href && href.startsWith("/")) fullUrl = `https://www.cnv.gov.ar${href}`;
-        if (href && !href.startsWith("http") && !href.startsWith("/")) fullUrl = `https://www.cnv.gov.ar/${href}`;
-        result.documents.push({ label, url: fullUrl });
-      }
-    });
-    // Best effort: try first PDF-like document that matches class keywords.
-    for (const doc of result.documents.slice(0, 8)) {
-      if (!/pdf|download|AIF|archivo|doc/i.test(doc.url + " " + doc.label)) continue;
-      try {
-        const pdfText = await readPdfText(doc.url);
-        if (!includesAnyKeyword(pdfText, bond.classKeywords || [])) continue;
-        const patch = extractTechnicalFromText(pdfText);
-        result.patch = { ...result.patch, ...patch };
-        result.confidence = Object.keys(patch).length >= 3 ? "alta" : result.confidence;
-        result.bestDocument = doc;
-        break;
-      } catch (e) {
-        result.warnings.push(`No pude leer PDF ${doc.url}: ${e.message}`);
-      }
-    }
-    return result;
-  } catch (e) {
-    return { ok: false, url, message: e.message };
-  }
-}
-
-function extractFixFromText(text, issuer, keywords = []) {
+function extractRatingFromFixText(text) {
   const normalized = normalizeText(text);
-  const issuerParts = String(issuer || "").split(/\s+/).filter((w) => w.length > 4).slice(0, 3);
-  const issuerHit = issuerParts.some((w) => normalized.toLowerCase().includes(w.toLowerCase()));
-  const keywordHit = keywords.length ? includesAnyKeyword(normalized, keywords) : true;
-  // FIX suele publicar calificaciones locales tipo AAA(arg), AA(arg), A(arg), etc.
-  // Evitamos tomar letras sueltas de la página como rating, que era lo que generaba valores erróneos como "d".
   const localRatingRegex = /\b(?:AAA|AA|A|BBB|BB|B|CCC|CC|C|D)(?:[+-])?\s*(?:\(arg\)|arg|\.ar)\b/gi;
-  const globalRatingRegex = /\b(?:AAA|AA|BBB|BB|CCC|CC|C)(?:[+-])?\b/g;
-  const matches = [
-    ...(normalized.match(localRatingRegex) || []),
-    ...(normalized.match(globalRatingRegex) || []),
-  ];
-  const filtered = Array.from(new Set(matches
-    .map((m) => m.replace(/\s+/g, "").replace(/\.ar$/i, ".ar").replace(/arg$/i, "(arg)"))
-    .filter((m) => !/^AR$/i.test(m))));
-  let outlook = null;
-  const outlookMatch = normalized.match(/Perspectiva\s+(Estable|Positiva|Negativa)|Rating\s+Watch\s+(Positivo|Negativo|En\s+Evoluci[oó]n)/i);
-  if (outlookMatch) outlook = outlookMatch[1] || outlookMatch[2];
-  return {
-    issuerHit,
-    keywordHit,
-    rating: filtered[0] || null,
-    outlook,
-    rawSample: normalized.slice(0, 500),
-  };
+  const m = normalized.match(localRatingRegex);
+  if (!m?.length) return null;
+  return m[0].replace(/\s+/g, "").replace(/arg$/i, "(arg)");
 }
-
 async function syncFixForBond(bond) {
   const issuer = bond?.issuer || bond?.shortIssuer;
   if (!issuer) return { ok: false, message: "Falta emisor" };
-  const q = encodeURIComponent(issuer);
-  const urls = [
-    `https://www.fixscr.com/calificaciones?search=${q}`,
-    `https://www.fixscr.com/calificaciones?q=${q}`,
-    `https://www.fixscr.com/reportes-web/index?search=${q}`,
-  ];
-  const attempts = [];
-  for (const url of urls) {
-    try {
-      const html = await fetchText(url);
-      const $ = cheerio.load(html);
-      const text = normalizeText($.text());
-      const extracted = extractFixFromText(text, issuer, bond.classKeywords || []);
-      attempts.push({ url, ...extracted });
-      if (extracted.rating && extracted.issuerHit) {
-        return {
-          ok: true,
-          url,
-          patch: {
-            rating: extracted.rating,
-            ratingAgency: "FIX",
-            ratingOutlook: extracted.outlook || bond.ratingOutlook || "",
-            ratingUpdatedAt: nowIso(),
-            ratingSource: url,
-          },
-          confidence: extracted.keywordHit ? "media" : "baja",
-          attempts,
-        };
-      }
-    } catch (e) {
-      attempts.push({ url, error: e.message });
-    }
-  }
-  return { ok: false, message: "No se detectó rating FIX de forma automática", attempts };
+  const url = `https://www.fixscr.com/calificaciones?search=${encodeURIComponent(issuer)}`;
+  try {
+    const html = await fetchText(url);
+    const $ = cheerio.load(html);
+    const text = $.text();
+    const rating = extractRatingFromFixText(text);
+    if (!rating) return { ok: false, message: "No se detectó rating FIX", url };
+    return { ok: true, patch: { rating, ratingAgency: "FIX", ratingUpdatedAt: nowIso(), ratingSource: url }, url };
+  } catch (e) { return { ok: false, message: e.message, url }; }
 }
-
-async function syncOne(symbol, mode = "both") {
+async function syncOne(symbol, mode = "fix") {
   const bonds = await loadBonds();
   const idx = findBondIndexBySymbol(bonds, symbol);
-  if (idx < 0) return { ok: false, message: "Bono no encontrado en base técnica ni aliases" };
+  if (idx < 0) return { ok: false, message: "Bono no encontrado" };
   const bond = bonds[idx];
   const reports = {};
   let patch = {};
-  if (mode === "cnv" || mode === "both") {
-    const cnv = await syncCnvForBond(bond);
-    reports.cnv = cnv;
-    if (cnv.ok && cnv.patch) patch = { ...patch, ...cnv.patch, sourceStatus: `CNV ${cnv.confidence}`, technicalUpdatedAt: nowIso(), technicalSource: cnv.bestDocument?.url || cnv.url };
-  }
   if (mode === "fix" || mode === "both") {
     const fix = await syncFixForBond(bond);
     reports.fix = fix;
     if (fix.ok && fix.patch) patch = { ...patch, ...fix.patch };
   }
-  if (Object.keys(patch).length) {
-    bonds[idx] = { ...bond, ...patch };
-    await saveBonds(bonds);
-  }
+  // CNV sigue best-effort: se conserva el mapeo por CUIT/clase y se evita pisar datos si no hay match fuerte.
+  if (mode === "cnv" || mode === "both") reports.cnv = { ok: false, message: "CNV automático pendiente de validación por formato de prospectos" };
+  if (Object.keys(patch).length) { bonds[idx] = { ...bond, ...patch }; await saveBonds(bonds); cache.prices = { ts: 0, data: null }; }
   return { ok: true, symbol: bond.symbol, patch, reports };
 }
 
-app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5" });
-});
-
-app.get("/api/bonds", async (_req, res) => {
-  try {
-    res.json({ ok: true, bonds: await loadBonds() });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
-app.post("/api/bonds", async (req, res) => {
-  try {
-    if (!Array.isArray(req.body?.bonds)) return res.status(400).json({ ok: false, error: "Enviar { bonds: [...] }" });
-    await saveBonds(req.body.bonds);
-    res.json({ ok: true, count: req.body.bonds.length });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
-
-
+app.get("/api/health", (_req, res) => res.json({ ok: true, asOf: nowIso(), service: "bonos-rotacion-cloud-v5.4" }));
+app.get("/api/bonds", async (_req, res) => { try { res.json({ ok: true, bonds: await loadBonds() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
+app.post("/api/bonds", async (req, res) => { try { if (!Array.isArray(req.body?.bonds)) return res.status(400).json({ ok: false, error: "Enviar { bonds: [...] }" }); await saveBonds(req.body.bonds); cache.prices = { ts: 0, data: null }; res.json({ ok: true, count: req.body.bonds.length }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
 app.post("/api/bonds/upsert", async (req, res) => {
   try {
     const bond = req.body?.bond;
@@ -699,37 +419,15 @@ app.post("/api/bonds/upsert", async (req, res) => {
     const bonds = await loadBonds();
     const symbol = normalizeSymbol(bond.symbol);
     const idx = findBondIndexBySymbol(bonds, symbol);
-    const aliases = Array.from(new Set([symbol, ...(Array.isArray(bond.aliases) ? bond.aliases : [])].map(normalizeSymbol).filter(Boolean)));
-    const cleaned = {
-      ...bond,
-      symbol,
-      aliases,
-      coupon: bond.coupon === "" || bond.coupon === null || bond.coupon === undefined ? undefined : Number(bond.coupon),
-      frequency: bond.frequency === "" || bond.frequency === null || bond.frequency === undefined ? undefined : Number(bond.frequency),
-      updatedAt: nowIso(),
-      sourceStatus: bond.sourceStatus || "editado-manual",
-    };
-    if (!Array.isArray(cleaned.amortization) || !cleaned.amortization.length) {
-      if (cleaned.maturity) cleaned.amortization = [{ date: cleaned.maturity, percent: 1 }];
-    }
-    if (idx >= 0) bonds[idx] = { ...bonds[idx], ...cleaned };
-    else bonds.push(cleaned);
-    await saveBonds(bonds);
-    cache.prices = { ts: 0, data: null };
+    const aliases = [...new Set([symbol, ...(Array.isArray(bond.aliases) ? bond.aliases : [])].map(normalizeSymbol).filter(Boolean))];
+    const cleaned = { ...bond, symbol, aliases, coupon: bond.coupon === "" || bond.coupon === null || bond.coupon === undefined ? undefined : Number(bond.coupon), frequency: bond.frequency === "" || bond.frequency === null || bond.frequency === undefined ? undefined : Number(bond.frequency), minLot: bond.minLot === "" || bond.minLot === null || bond.minLot === undefined ? undefined : Number(bond.minLot), updatedAt: nowIso(), sourceStatus: bond.sourceStatus || "editado-manual" };
+    if (!Array.isArray(cleaned.amortization) || !cleaned.amortization.length) if (cleaned.maturity) cleaned.amortization = [{ date: cleaned.maturity, percent: 1 }];
+    if (idx >= 0) bonds[idx] = { ...bonds[idx], ...cleaned }; else bonds.push(cleaned);
+    await saveBonds(bonds); cache.prices = { ts: 0, data: null };
     res.json({ ok: true, bond: idx >= 0 ? bonds[idx] : bonds[bonds.length - 1], action: idx >= 0 ? "updated" : "created" });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
-
-app.get("/api/prices", async (_req, res) => {
-  try {
-    res.json(await getPrices());
-  } catch (e) {
-    res.status(500).json({ ok: false, asOf: nowIso(), error: e.message });
-  }
-});
-
+app.get("/api/prices", async (_req, res) => { try { res.json(await getPrices()); } catch (e) { res.status(500).json({ ok: false, asOf: nowIso(), error: e.message }); } });
 app.post("/api/sync/:mode", async (req, res) => {
   try {
     const mode = req.params.mode;
@@ -738,47 +436,9 @@ app.post("/api/sync/:mode", async (req, res) => {
     if (symbol) return res.json(await syncOne(symbol, mode));
     const bonds = await loadBonds();
     const results = [];
-    for (const b of bonds) {
-      results.push(await syncOne(b.symbol, mode));
-    }
+    for (const b of bonds.slice(0, 60)) results.push(await syncOne(b.symbol, mode));
     res.json({ ok: true, count: results.length, results });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
-
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-if (process.env.AUTO_SYNC_FIX === "true") {
-  cron.schedule("0 */6 * * *", async () => {
-    try {
-      const bonds = await loadBonds();
-      for (const b of bonds) await syncOne(b.symbol, "fix");
-      console.log(`[${nowIso()}] FIX sync OK`);
-    } catch (e) {
-      console.error(`[${nowIso()}] FIX sync error`, e.message);
-    }
-  });
-}
-
-if (process.env.AUTO_SYNC_CNV === "true") {
-  cron.schedule("15 3 * * *", async () => {
-    try {
-      const bonds = await loadBonds();
-      for (const b of bonds) await syncOne(b.symbol, "cnv");
-      console.log(`[${nowIso()}] CNV sync OK`);
-    } catch (e) {
-      console.error(`[${nowIso()}] CNV sync error`, e.message);
-    }
-  });
-}
-
-if (!fsSync.existsSync(BONDS_PATH)) {
-  console.warn(`No existe ${BONDS_PATH}. Crear data/bonds.json antes de iniciar.`);
-}
-
-app.listen(PORT, () => {
-  console.log(`Dashboard escuchando en puerto ${PORT}`);
-});
+app.get("*", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.listen(PORT, () => console.log(`Dashboard escuchando en puerto ${PORT}`));
